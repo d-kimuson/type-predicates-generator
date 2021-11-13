@@ -1,4 +1,5 @@
 import { uniq } from "ramda"
+import * as dedent from "dedent"
 import type * as to from "./typeObject"
 
 const primitiveTypePredicateNameMap = {
@@ -49,6 +50,12 @@ function isPossibleUseTypeName(
   return ["ArrayTO", "ObjectTO", "UnionTO"].includes(value.__type)
 }
 
+function generateDeclare(argName: string, typeName?: string) {
+  return `(${argName}: unknown)${
+    typeName ? `: ${argName} is ${typeName}` : ""
+  } => `
+}
+
 export function generateTypePredicates(
   files: {
     importPath: string
@@ -94,61 +101,48 @@ export function generateTypePredicates(
       usedSpecials.push(type.kind)
       return specialTypePredicateNameMap[type.kind]
     } else if (type.__type === "LiteralTO") {
-      return `(${argName()}: unknown)${
-        typeName ? `: ${argName()} is ${typeName}` : ""
-      } => ${argName()} === ${
+      return `${generateDeclare(argName(), typeName)}${argName()} === ${
         typeof type.value === "string" ? '"' + type.value + '"' : type.value
       }`
-    } else if (type.__type === "ArrayTO") {
-      return `
-      (${argName()}: unknown)${
-        typeName ? `: ${argName()} is ${typeName}` : ""
-      } =>
-        Array.isArray(${argName()}) &&
-        ${argName()}.reduce((s: boolean, t: unknown) => s && (${generateCheckFn(
-        {
-          type: type.child,
-          parentArgCount: argCount,
-        }
-      )})(t) , true)`
     } else if (type.__type === "UnionTO") {
-      return `
-      (${argName()}: unknown)${
-        typeName ? `: ${argName()} is ${typeName}` : ""
-      } =>
-        ${type.unions
-          .map(
-            (unionType) =>
-              `(${generateCheckFn({
-                type: unionType,
-                parentArgCount: argCount,
-              })})(${argName()})`
-          )
-          .join(" || ")}`
+      return `${generateDeclare(argName(), typeName)}${type.unions
+        .map(
+          (unionType) =>
+            `(${generateCheckFn({
+              type: unionType,
+              parentArgCount: argCount,
+            })})(${argName()})`
+        )
+        .join(" || ")}`
+    } else if (type.__type === "ArrayTO") {
+      return `${generateDeclare(
+        argName(),
+        typeName
+      )}Array.isArray(${argName()}) &&
+      ${argName()}.reduce((s: boolean, t: unknown) => s && (${generateCheckFn({
+        type: type.child,
+        parentArgCount: argCount,
+      })})(t) , true)`
     } else if (type.__type === "ObjectTO") {
       usedUtils.push("object")
-      return `
-      (${argName()}: unknown)${
-        typeName ? `: ${argName()} is ${typeName}` : ""
-      } =>
-        isObject(${argName()}) &&
-        ${type
-          .getProps()
-          .map(
-            (prop) =>
-              `('${prop.propName}' in ${argName()} && (${generateCheckFn({
-                type: prop.type,
-                parentArgCount: argCount,
-              })})(${argName()}['${prop.propName}']))`
-          )
-          .join(" && ")}`
+      return `${generateDeclare(argName(), typeName)}isObject(${argName()}) &&
+      ${type
+        .getProps()
+        .map(
+          (prop) =>
+            `('${prop.propName}' in ${argName()} && (${generateCheckFn({
+              type: prop.type,
+              parentArgCount: argCount,
+            })})(${argName()}['${prop.propName}']))`
+        )
+        .join(" && ")}`
     }
 
     console.warn(`${typeName} will be skipped because not supported.`)
     return `/* WARN: Not Supported Type */ (value: unknown)${
       typeof typeName === "string" ? `:value is ${typeName}` : ""
     } => {
-      console.warn('check was skipped bacause '${typeName}' is not supported type.');
+      console.warn("check was skipped bacause '${typeName}' is not supported type.");
       return true;
     }`
   }
@@ -181,7 +175,7 @@ export function generateTypePredicates(
     ].flat()
   )
 
-  return `
+  return dedent(`
     ${files
       .filter(({ types }) => types.length !== 0)
       .map(
@@ -194,5 +188,5 @@ export function generateTypePredicates(
     ${corePredicates.join("\n")}
 
     ${checkFns.map((checkFn) => checkFn).join("\n")}
-  `
+  `)
 }
