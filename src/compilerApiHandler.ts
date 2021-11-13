@@ -155,6 +155,8 @@ export class CompilerApiHandler {
   }
 
   #convertType(type: ts.Type): to.TypeObject {
+    console.log(this.#typeToString(type))
+
     return switchExpression({
       type,
       typeText: this.#typeToString(type),
@@ -163,6 +165,17 @@ export class CompilerApiHandler {
         __type: "UnionTO",
         unions: (type?.types ?? []).map((type) => this.#convertType(type)),
       })
+      .case<to.LiteralTO>(({ type }) => type.isLiteral(), {
+        __type: "LiteralTO",
+        value: type.value,
+      })
+      .case<to.LiteralTO>(
+        ({ typeText }) => ["true", "false"].includes(typeText),
+        {
+          __type: "LiteralTO",
+          value: this.#typeToString(type) === "true" ? true : false,
+        }
+      )
       .case<to.PrimitiveTO>(
         ({ typeText }) => typeText === "string",
         primitive("string")

@@ -53,8 +53,33 @@ describe("convertType", () => {
     })
   })
 
-  // 扱いがよくわからないのであとで
-  // it("literal", () => {})
+  it("literal", () => {
+    const typesResult = handler.extractTypes(
+      resolve(__dirname, "../example/types/literal.ts")
+    )
+    expect(isOk(typesResult)).toBe(true)
+    if (!isOk(typesResult)) {
+      return
+    }
+
+    const types = typesResult.ok
+    expect(types.length).toStrictEqual(3)
+
+    expect(types[0]?.type).toStrictEqual({
+      __type: "LiteralTO",
+      value: "hello",
+    })
+
+    expect(types[1]?.type).toStrictEqual({
+      __type: "LiteralTO",
+      value: 20,
+    })
+
+    expect(types[2]?.type).toStrictEqual({
+      __type: "LiteralTO",
+      value: true,
+    })
+  })
 
   it("union", () => {
     const typesResult = handler.extractTypes(
