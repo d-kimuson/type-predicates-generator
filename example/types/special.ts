@@ -1,2 +1,2 @@
-type Undef = undefined
-type Null = null
+export type Undef = undefined
+export type Null_ = null

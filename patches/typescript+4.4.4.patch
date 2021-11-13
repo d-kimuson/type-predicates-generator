@@ -1,16 +1,17 @@
 diff --git a/node_modules/typescript/lib/typescript.d.ts b/node_modules/typescript/lib/typescript.d.ts
-index 4902d45..cabc457 100644
+index 4902d45..e185ea8 100644
 --- a/node_modules/typescript/lib/typescript.d.ts
 +++ b/node_modules/typescript/lib/typescript.d.ts
-@@ -566,6 +566,7 @@ declare namespace ts {
+@@ -566,6 +566,8 @@ declare namespace ts {
          readonly decorators?: NodeArray<Decorator>;
          readonly modifiers?: ModifiersArray;
          readonly parent: Node;
-+        readonly type?: TypeNode
++        readonly type?: TypeNode,
++        readonly symbol?: Symbol
      }
      export interface JSDocContainer {
      }
-@@ -2558,6 +2559,10 @@ declare namespace ts {
+@@ -2558,6 +2560,10 @@ declare namespace ts {
          pattern?: DestructuringPattern;
          aliasSymbol?: Symbol;
          aliasTypeArguments?: readonly Type[];

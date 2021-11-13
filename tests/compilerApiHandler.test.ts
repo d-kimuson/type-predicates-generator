@@ -19,12 +19,12 @@ describe("convertType", () => {
     const types = typesResult.ok
     expect(types.length).toStrictEqual(2)
 
-    expect(types[0]).toStrictEqual({
+    expect(types[0]?.type).toStrictEqual({
       __type: "PrimitiveTO",
       kind: "string",
     })
 
-    expect(types[1]).toStrictEqual({
+    expect(types[1]?.type).toStrictEqual({
       __type: "PrimitiveTO",
       kind: "number",
     })
@@ -42,12 +42,12 @@ describe("convertType", () => {
     const types = typesResult.ok
     expect(types.length).toStrictEqual(2)
 
-    expect(types[0]).toStrictEqual({
+    expect(types[0]?.type).toStrictEqual({
       __type: "SpecialTO",
       kind: "undefined",
     })
 
-    expect(types[1]).toStrictEqual({
+    expect(types[1]?.type).toStrictEqual({
       __type: "SpecialTO",
       kind: "null",
     })
@@ -68,7 +68,7 @@ describe("convertType", () => {
     const types = typesResult.ok
     expect(types.length).toStrictEqual(1)
 
-    expect(types[0]).toStrictEqual({
+    expect(types[0]?.type).toStrictEqual({
       __type: "UnionTO",
       unions: [
         {
@@ -92,7 +92,7 @@ describe("convertType", () => {
       const types = typesResult.ok
       expect(types.length).toStrictEqual(2)
 
-      expect(types[0]).toStrictEqual({
+      expect(types[0]?.type).toStrictEqual({
         __type: "ArrayTO",
         child: {
           __type: "PrimitiveTO",
@@ -100,7 +100,7 @@ describe("convertType", () => {
         },
       })
 
-      expect(types[1]).toStrictEqual({
+      expect(types[1]?.type).toStrictEqual({
         __type: "ArrayTO",
         child: {
           __type: "PrimitiveTO",
@@ -123,11 +123,11 @@ describe("convertType", () => {
     expect(types.length).toStrictEqual(2)
 
     const [type1, type2] = types
-    expect(type1?.__type).toStrictEqual("ObjectTO")
-    if (type1?.__type !== "ObjectTO") {
+    expect(type1?.type.__type).toStrictEqual("ObjectTO")
+    if (type1?.type.__type !== "ObjectTO") {
       return
     }
-    expect(type1?.getProps()).toStrictEqual([
+    expect(type1?.type.getProps()).toStrictEqual([
       {
         propName: "name",
         type: {
@@ -137,11 +137,11 @@ describe("convertType", () => {
       },
     ])
 
-    expect(type2?.__type).toStrictEqual("ObjectTO")
-    if (type2?.__type !== "ObjectTO") {
+    expect(type2?.type.__type).toStrictEqual("ObjectTO")
+    if (type2?.type.__type !== "ObjectTO") {
       return
     }
-    const propsOneRecursive = type2?.getProps()
+    const propsOneRecursive = type2?.type.getProps()
     expect(propsOneRecursive[0]).toStrictEqual({
       propName: "name",
       type: {

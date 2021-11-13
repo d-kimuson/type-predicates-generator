@@ -1,2 +1,2 @@
-type ArrStr = string[]
-type ArrStr2 = Array<string>
+export type ArrStr = string[]
+export type ArrStr2 = Array<string>

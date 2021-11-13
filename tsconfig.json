@@ -18,5 +18,6 @@
     "noErrorTruncation": true,
     "forceConsistentCasingInFileNames": true
   },
+  "files": ["example.ts"],
   "include": ["src"],
 }

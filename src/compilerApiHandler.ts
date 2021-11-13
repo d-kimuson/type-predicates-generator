@@ -16,7 +16,10 @@ export class CompilerApiHandler {
 
   public extractTypes(
     filePath: string
-  ): Result<to.TypeObject[], { reason: "fileNotFound" }> {
+  ): Result<
+    { typeName: string | undefined; type: to.TypeObject }[],
+    { reason: "fileNotFound" }
+  > {
     const sourceFile = this.#program.getSourceFile(filePath)
 
     if (!sourceFile) {
@@ -31,9 +34,13 @@ export class CompilerApiHandler {
     )
 
     return ok(
-      nodes.map((node) =>
-        this.#convertType(this.#typeChecker.getTypeAtLocation(node))
-      )
+      nodes.map((node) => ({
+        typeName:
+          typeof node?.symbol?.escapedName !== "undefined"
+            ? String(node?.symbol?.escapedName)
+            : undefined,
+        type: this.#convertType(this.#typeChecker.getTypeAtLocation(node)),
+      }))
     )
   }
 

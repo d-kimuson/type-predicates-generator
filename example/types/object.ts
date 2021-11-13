@@ -1,7 +1,7 @@
-type Obj = {
+export type Obj = {
   name: string
 }
-type RecursiveObj = {
+export type RecursiveObj = {
   name: string
   child: RecursiveObj
 }

@@ -1,2 +1,2 @@
-type Str = string
-type Num = number
+export type Str = string
+export type Num = number

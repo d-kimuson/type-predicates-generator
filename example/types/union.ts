@@ -1,1 +1,1 @@
-type Union = string | number
+export type Union = string | number
