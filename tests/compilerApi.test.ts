@@ -8,11 +8,16 @@ describe("compilerApi", () => {
     )
     expect(program).toBeDefined()
 
-    console.log(program.getRootFileNames())
-
-    expect(program.getRootFileNames()).toStrictEqual(
-      ["./example/types/entity.ts"].map((relativePath) =>
-        resolve(__dirname, "..", relativePath)
+    expect(program.getRootFileNames()).toEqual(
+      [
+        "array.ts",
+        "entity.ts",
+        "object.ts",
+        "primitive.ts",
+        "special.ts",
+        "union.ts",
+      ].map((relativePath) =>
+        resolve(__dirname, "../example/types", relativePath)
       )
     )
   })

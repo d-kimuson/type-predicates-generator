@@ -1,0 +1,1 @@
+type Union = string | number
