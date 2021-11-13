@@ -28,10 +28,13 @@ export class CompilerApiHandler {
       })
     }
 
-    const nodes = this.#extractNodes(sourceFile).filter(
-      (node): node is ts.TypeAliasDeclaration | ts.InterfaceDeclaration =>
-        ts.isInterfaceDeclaration(node) || ts.isTypeAliasDeclaration(node)
-    )
+    const nodes = this.#extractNodes(sourceFile)
+      .filter(
+        (node): node is ts.TypeAliasDeclaration | ts.InterfaceDeclaration =>
+          ts.isInterfaceDeclaration(node) || ts.isTypeAliasDeclaration(node)
+      )
+      // @ts-expect-error exclude not exported type def
+      .filter((node) => typeof node?.localSymbol !== "undefined")
 
     return ok(
       nodes.map((node) => ({
