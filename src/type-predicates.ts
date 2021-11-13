@@ -93,6 +93,12 @@ export function generateTypePredicates(
     } else if (type.__type === "SpecialTO") {
       usedSpecials.push(type.kind)
       return specialTypePredicateNameMap[type.kind]
+    } else if (type.__type === "LiteralTO") {
+      return `(${argName()}: unknown)${
+        typeName ? `: ${argName()} is ${typeName}` : ""
+      } => ${argName()} === ${
+        typeof type.value === "string" ? '"' + type.value + '"' : type.value
+      }`
     } else if (type.__type === "ArrayTO") {
       return `
       (${argName()}: unknown)${
@@ -139,8 +145,10 @@ export function generateTypePredicates(
     }
 
     console.warn(`${typeName} will be skipped because not supported.`)
-    return `/* WARN: Not Supported Type */ () => {
-      console.warn('check was skipped bacause ${typeName} is not supported type.');
+    return `/* WARN: Not Supported Type */ (value: unknown)${
+      typeof typeName === "string" ? `:value is ${typeName}` : ""
+    } => {
+      console.warn('check was skipped bacause '${typeName}' is not supported type.');
       return true;
     }`
   }
@@ -175,6 +183,7 @@ export function generateTypePredicates(
 
   return `
     ${files
+      .filter(({ types }) => types.length !== 0)
       .map(
         ({ importPath, types }) =>
           `import type { ${types
