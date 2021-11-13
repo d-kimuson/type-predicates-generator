@@ -43,6 +43,12 @@ const utilTypePredicateMap = {
       typeof value === 'object' && value !== null && !Array.isArray(value);`,
 }
 
+function isPossibleUseTypeName(
+  value: to.TypeObject
+): value is to.ArrayTO | to.ObjectTO | to.UnionTO {
+  return ["ArrayTO", "ObjectTO", "UnionTO"].includes(value.__type)
+}
+
 export function generateTypePredicates(
   files: {
     importPath: string
@@ -56,6 +62,9 @@ export function generateTypePredicates(
   const usedPrimitives: to.PrimitiveTO["kind"][] = []
   const usedSpecials: to.SpecialTO["kind"][] = []
   const usedUtils: (keyof typeof utilTypePredicateMap)[] = []
+  const typeNames = files.flatMap(({ types }) =>
+    types.map(({ typeName }) => typeName)
+  )
 
   const generateCheckFn = ({
     type,
@@ -68,6 +77,15 @@ export function generateTypePredicates(
   }): string => {
     const argCount = parentArgCount + 1
     const argName = () => `arg_${argCount}`
+    const isToplevel = typeof typeName === "string"
+
+    if (
+      !isToplevel &&
+      isPossibleUseTypeName(type) &&
+      typeNames.includes(type.typeName)
+    ) {
+      return `is${type.typeName}`
+    }
 
     if (type.__type === "PrimitiveTO") {
       usedPrimitives.push(type.kind)
@@ -81,10 +99,12 @@ export function generateTypePredicates(
         typeName ? `: ${argName()} is ${typeName}` : ""
       } =>
         Array.isArray(${argName()}) &&
-        ${argName()}.reduce((s: boolean, t) => s && (${generateCheckFn({
-        type: type.child,
-        parentArgCount: argCount,
-      })})(t) , true)`
+        ${argName()}.reduce((s: boolean, t: unknown) => s && (${generateCheckFn(
+        {
+          type: type.child,
+          parentArgCount: argCount,
+        }
+      )})(t) , true)`
     } else if (type.__type === "UnionTO") {
       return `
       (${argName()}: unknown)${
@@ -138,7 +158,7 @@ export function generateTypePredicates(
       asserts
         ? `
     export function assertIs${typeName}(value: unknown): asserts value is ${typeName} {
-      if (!is${typeName}) throw TypeError(\`value must be ${typeName} but received \${value}\`)
+      if (!is${typeName}(value)) throw TypeError(\`value must be ${typeName} but received \${value}\`)
     }
     `
         : ""

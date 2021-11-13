@@ -7,7 +7,7 @@ import { generate } from "./src/cli"
     tsconfigPath,
     output: resolve(__dirname, "./example/generated.ts"),
     basePath: resolve(__dirname, "./example"),
-    fileGlobs: ["**/{entity,array,special,union}.ts"],
+    fileGlobs: ["**/{entity,array,special,union,object}.ts"],
     asserts: true,
   })
 })()
