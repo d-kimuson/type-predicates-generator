@@ -60,6 +60,7 @@ export class CompilerApiHandler {
     return {
       __type: "ObjectTO",
       tsType,
+      typeName: this.#typeToString(tsType),
       getProps: () =>
         this.#typeChecker.getPropertiesOfType(tsType).map(
           (
@@ -158,14 +159,13 @@ export class CompilerApiHandler {
   }
 
   #convertType(type: ts.Type): to.TypeObject {
-    console.log(this.#typeToString(type))
-
     return switchExpression({
       type,
       typeText: this.#typeToString(type),
     })
       .case<to.UnionTO>(({ type }) => type.isUnion(), {
         __type: "UnionTO",
+        typeName: this.#typeToString(type),
         unions: (type?.types ?? []).map((type) => this.#convertType(type)),
       })
       .case<to.LiteralTO>(({ type }) => type.isLiteral(), {
@@ -221,6 +221,7 @@ export class CompilerApiHandler {
           typeText.endsWith("[]") || type.symbol?.escapedName === "Array",
         {
           __type: "ArrayTO",
+          typeName: this.#typeToString(type),
           child: (() => {
             const resultT = this.#extractArrayT(type)
             return isOk(resultT)

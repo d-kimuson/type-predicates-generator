@@ -95,6 +95,7 @@ describe("convertType", () => {
 
     expect(types[0]?.type).toStrictEqual({
       __type: "UnionTO",
+      typeName: "Union",
       unions: [
         {
           __type: "PrimitiveTO",
@@ -119,6 +120,7 @@ describe("convertType", () => {
 
       expect(types[0]?.type).toStrictEqual({
         __type: "ArrayTO",
+        typeName: "ArrStr",
         child: {
           __type: "PrimitiveTO",
           kind: "string",
@@ -127,6 +129,7 @@ describe("convertType", () => {
 
       expect(types[1]?.type).toStrictEqual({
         __type: "ArrayTO",
+        typeName: "ArrStr2",
         child: {
           __type: "PrimitiveTO",
           kind: "string",

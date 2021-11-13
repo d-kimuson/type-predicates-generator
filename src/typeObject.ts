@@ -9,6 +9,10 @@ export type TypeObject =
   | UnionTO
   | UnknownTO
 
+type TypeNameTrait = {
+  typeName: string
+}
+
 export type PrimitiveTO = {
   __type: "PrimitiveTO"
   kind: "string" | "number" | "bigint" | "boolean"
@@ -24,12 +28,12 @@ export type LiteralTO = {
   value: unknown
 }
 
-export type ArrayTO = {
+export type ArrayTO = TypeNameTrait & {
   __type: "ArrayTO"
   child: TypeObject
 }
 
-export type ObjectTO = {
+export type ObjectTO = TypeNameTrait & {
   __type: "ObjectTO"
   tsType: ts.Type // 再帰型を後から解決するため
   getProps: () => {
@@ -38,7 +42,7 @@ export type ObjectTO = {
   }[]
 }
 
-export type UnionTO = {
+export type UnionTO = TypeNameTrait & {
   __type: "UnionTO"
   unions: TypeObject[]
 }
