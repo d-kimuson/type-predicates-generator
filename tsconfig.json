@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es2020",
-    "outDir": "out",
+    "outDir": "dist",
     "lib": ["es2020"],
     "types": ["node"],
     "rootDir": ".",
@@ -11,6 +11,7 @@
       "~/*": ["./src/*"]
     },
     "strict": true,
+    "declaration": true,
     "moduleResolution": "node",
     "noEmit": false,
     "skipLibCheck": true,

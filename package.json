@@ -1,11 +1,12 @@
 {
   "name": "type-predicates-generator",
-  "version": "1.0.0",
-  "main": "index.js",
+  "version": "0.0.1",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "license": "MIT",
   "scripts": {
     "generate:example": "ts-node -r tsconfig-paths/register example.ts",
-    "cli:example": "cd example && node ../out/src/index.js",
+    "cli:example": "cd example && node ../dist/src/index.js",
     "precli:example": "yarn build",
     "build": "tsc -p . && tsc-alias -p tsconfig.json",
     "test": "jest",
