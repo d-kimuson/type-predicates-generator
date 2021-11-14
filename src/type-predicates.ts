@@ -1,6 +1,6 @@
 import { uniq } from "ramda"
 import * as dedent from "dedent"
-import type * as to from "./typeObject"
+import type * as to from "./type-object"
 
 const primitiveTypePredicateNameMap = {
   string: "isString",

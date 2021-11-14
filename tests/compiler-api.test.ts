@@ -1,5 +1,5 @@
 import { resolve } from "path"
-import { createProgram, watchCompiler } from "~/compilerApi"
+import { createProgram, watchCompiler } from "~/compiler-api"
 
 describe("compilerApi", () => {
   it("createProgram", () => {
@@ -7,19 +7,6 @@ describe("compilerApi", () => {
       resolve(__dirname, "../example/tsconfig.json")
     )
     expect(program).toBeDefined()
-
-    expect(program.getRootFileNames()).toEqual(
-      [
-        "array.ts",
-        "entity.ts",
-        "object.ts",
-        "primitive.ts",
-        "special.ts",
-        "union.ts",
-      ].map((relativePath) =>
-        resolve(__dirname, "../example/types", relativePath)
-      )
-    )
   })
 
   it("watchCompiler", () => {

@@ -1,6 +1,6 @@
 import { resolve } from "path"
-import { createProgram } from "~/compilerApi"
-import { CompilerApiHandler } from "~/compilerApiHandler"
+import { createProgram } from "~/compiler-api"
+import { CompilerApiHandler } from "~/compiler-api-handler"
 import { isOk } from "~/utils"
 
 const program = createProgram(resolve(__dirname, "../example/tsconfig.json"))

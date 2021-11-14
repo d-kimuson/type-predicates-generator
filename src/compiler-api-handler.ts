@@ -2,8 +2,8 @@ import * as ts from "typescript"
 import { forEachChild, ArrayTypeNode } from "typescript"
 import { Result, ok, ng, switchExpression, isOk } from "~/utils"
 
-import type * as to from "./typeObject"
-import { primitive, special } from "./typeObject"
+import type * as to from "./type-object"
+import { primitive, special } from "./type-object"
 
 export class CompilerApiHandler {
   #program: ts.Program
