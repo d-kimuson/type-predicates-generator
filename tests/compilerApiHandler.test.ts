@@ -163,6 +163,17 @@ describe("convertType", () => {
           kind: "string",
         },
       },
+      {
+        propName: "names",
+        type: {
+          __type: "ArrayTO",
+          typeName: "string[]",
+          child: {
+            __type: "PrimitiveTO",
+            kind: "string",
+          },
+        },
+      },
     ])
 
     expect(type2?.type.__type).toStrictEqual("ObjectTO")

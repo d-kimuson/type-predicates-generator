@@ -1,5 +1,5 @@
 import * as ts from "typescript"
-import { forEachChild } from "typescript"
+import { forEachChild, ArrayTypeNode } from "typescript"
 import { Result, ok, ng, switchExpression, isOk } from "~/utils"
 
 import type * as to from "./typeObject"
@@ -69,25 +69,36 @@ export class CompilerApiHandler {
             propName: string
             type: to.TypeObject
           } => {
-            const declaration = (symbol.getDeclarations() ?? [])[0]
+            const typeNode = symbol.valueDeclaration?.type
 
             return {
               propName: String(symbol.escapedName),
               type:
-                typeof declaration === "undefined"
+                typeNode && ts.isArrayTypeNode(typeNode)
                   ? {
-                      __type: "UnknownTO",
+                      __type: "ArrayTO",
+                      typeName: this.#typeToString(
+                        this.#typeChecker.getTypeFromTypeNode(typeNode)
+                      ),
+                      child: this.#extractArrayTFromTypeNode(typeNode),
                     }
-                  : this.#convertType(
-                      this.#typeChecker.getTypeOfSymbolAtLocation(
-                        symbol,
-                        declaration
-                      )
-                    ),
+                  : typeNode
+                  ? this.#convertType(
+                      this.#typeChecker.getTypeFromTypeNode(typeNode)
+                    )
+                  : {
+                      __type: "UnknownTO",
+                    },
             }
           }
         ),
     }
+  }
+
+  #extractArrayTFromTypeNode(typeNode: ts.ArrayTypeNode): to.TypeObject {
+    return this.#convertType(
+      this.#typeChecker.getTypeAtLocation(typeNode.elementType)
+    )
   }
 
   #extractArrayT(
@@ -120,11 +131,7 @@ export class CompilerApiHandler {
       })
     }
 
-    return ok(
-      this.#convertType(
-        this.#typeChecker.getTypeAtLocation(maybeNode.elementType)
-      )
-    )
+    return ok(this.#extractArrayTFromTypeNode(maybeNode))
   }
 
   #extractTypeArguments(
