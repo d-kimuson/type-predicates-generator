@@ -5,11 +5,15 @@
   "license": "MIT",
   "scripts": {
     "generate:example": "ts-node -r tsconfig-paths/register example.ts",
+    "cli:example": "cd example && node ../out/src/index.js",
+    "precli:example": "yarn build",
+    "build": "tsc -p . && tsc-alias -p tsconfig.json",
     "test": "jest",
     "test:watch": "jest --watch",
     "postinstall": "patch-package"
   },
   "dependencies": {
+    "commander": "^8.3.0",
     "dedent": "^0.7.0",
     "glob": "^7.2.0",
     "ramda": "^0.27.1",
@@ -26,6 +30,7 @@
     "postinstall-postinstall": "^2.1.0",
     "ts-jest": "^27.0.7",
     "ts-node": "^10.4.0",
+    "tsc-alias": "^1.4.0",
     "tsconfig-paths": "^3.11.0",
     "tsd": "^0.18.0"
   }

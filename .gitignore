@@ -117,4 +117,4 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-example/generated.ts
+example/type-predicates.ts

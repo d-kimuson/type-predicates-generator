@@ -1,5 +1,5 @@
 import { resolve } from "path"
-import { createProgram, watchCompiler } from "~/compiler-api"
+import { createProgram, watchCompiler } from "~/compiler-api/program"
 
 describe("compilerApi", () => {
   it("createProgram", () => {

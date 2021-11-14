@@ -52,12 +52,12 @@ export async function run({
     )
 
     onUpdate = () => {
-      const updatedProgram = watcher.getProgram()
+      const updatedProgram = watcher.getProgram().getProgram()
       generateAndWriteCodes(updatedProgram, files, output, option)
 
       console.log("successfully generated")
     }
-    program = watcher.getProgram()
+    program = watcher.getProgram().getProgram()
 
     console.log("start watching ...")
     console.log(`target file: ${output}`)
