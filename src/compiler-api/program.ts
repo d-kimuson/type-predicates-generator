@@ -41,7 +41,7 @@ export function watchCompiler(
   reportDiagnostic?: ts.DiagnosticReporter,
   reportWatchStatus?: ts.WatchStatusReporter,
   watchOption?: ts.WatchOptions
-): ts.WatchOfConfigFile<ts.SemanticDiagnosticsBuilderProgram> {
+): ts.EmitAndSemanticDiagnosticsBuilderProgram {
   const createProgram = createEmitAndSemanticDiagnosticsBuilderProgram
   const host = createWatchCompilerHost(
     tsConfigPath,
@@ -54,5 +54,5 @@ export function watchCompiler(
     reportWatchStatus,
     watchOption
   )
-  return createWatchProgram(host)
+  return createWatchProgram(host).getProgram()
 }

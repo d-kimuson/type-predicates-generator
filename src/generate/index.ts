@@ -3,17 +3,17 @@ import * as glob from "glob"
 import * as to from "~/type-object"
 import { writeFileSync } from "fs"
 import { resolve, relative } from "path"
-import { createProgram, watchCompiler } from "~/compiler-api"
-import { CompilerApiHandler } from "~/compiler-api-handler"
-import { generateTypePredicates } from "~/generate-type-predicates"
-import { isNg } from "./utils"
+import { createProgram, watchCompiler } from "~/compiler-api/program"
+import { CompilerApiHandler } from "~/compiler-api/compiler-api-handler"
+import { generateTypePredicates } from "~/generate/generate-type-predicates"
+import { isNg } from "~/utils"
 
 type GenerateOption = {
   asserts: boolean
   watch: boolean
 }
 
-export async function generate({
+export async function run({
   tsconfigPath,
   fileGlobs,
   output,
@@ -52,12 +52,12 @@ export async function generate({
     )
 
     onUpdate = () => {
-      const updatedProgram = watcher.getProgram().getProgram()
-      generateCode(updatedProgram, files, output, option)
+      const updatedProgram = watcher.getProgram()
+      generateAndWriteCodes(updatedProgram, files, output, option)
 
       console.log("successfully generated")
     }
-    program = watcher.getProgram().getProgram()
+    program = watcher.getProgram()
 
     console.log("start watching ...")
     console.log(`target file: ${output}`)
@@ -65,10 +65,10 @@ export async function generate({
     program = createProgram(tsconfigPath)
   }
 
-  generateCode(program, files, output, option)
+  generateAndWriteCodes(program, files, output, option)
 }
 
-const generateCode = (
+const generateAndWriteCodes = (
   program: ts.Program,
   files: string[],
   output: string,

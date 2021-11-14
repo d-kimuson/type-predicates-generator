@@ -1,9 +1,9 @@
-import { resolve, relative } from "path"
-import { generate } from "./src/cli"
+import { resolve } from "path"
+import { run } from "./src/generate"
 ;(async () => {
   const tsconfigPath = resolve(__dirname, "./example/tsconfig.json")
 
-  generate({
+  run({
     tsconfigPath,
     fileGlobs: ["**/*.ts"],
     basePath: resolve(__dirname, "./example"),
