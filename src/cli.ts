@@ -1,28 +1,31 @@
-import { resolve, relative } from "path"
-import { writeFileSync } from "fs"
-import * as to from "~/type-object"
-import { createProgram } from "~/compiler-api"
-import { CompilerApiHandler } from "~/compiler-api-handler"
-import { generateTypePredicates } from "~/type-predicates"
-import { isNg } from "./utils"
+import type * as ts from "typescript"
 import * as glob from "glob"
+import * as to from "~/type-object"
+import { writeFileSync } from "fs"
+import { resolve, relative } from "path"
+import { createProgram, watchCompiler } from "~/compiler-api"
+import { CompilerApiHandler } from "~/compiler-api-handler"
+import { generateTypePredicates } from "~/generate-type-predicates"
+import { isNg } from "./utils"
+
+type GenerateOption = {
+  asserts: boolean
+  watch: boolean
+}
 
 export async function generate({
   tsconfigPath,
+  fileGlobs,
   output,
   basePath,
-  fileGlobs,
-  asserts,
+  option,
 }: {
   tsconfigPath: string
+  fileGlobs: string[]
   output: string
   basePath: string
-  fileGlobs: string[]
-  asserts: boolean
+  option: GenerateOption
 }) {
-  const program = createProgram(tsconfigPath)
-  const handler = new CompilerApiHandler(program)
-
   const files = fileGlobs
     .flatMap((fileGlob) =>
       glob.sync(fileGlob, {
@@ -31,6 +34,47 @@ export async function generate({
       })
     )
     .map((filePath) => resolve(basePath, filePath))
+
+  let program: ts.Program
+  if (option.watch) {
+    let onUpdate: (() => void) | undefined = undefined
+    const watcher = watchCompiler(
+      tsconfigPath,
+      () => {},
+      ({ code }) => {
+        if (onUpdate && code === 6194 /* after compiled */) {
+          onUpdate()
+        }
+      },
+      {
+        excludeFiles: [output],
+      }
+    )
+
+    onUpdate = () => {
+      const updatedProgram = watcher.getProgram().getProgram()
+      generateCode(updatedProgram, files, output, option)
+
+      console.log("successfully generated")
+    }
+    program = watcher.getProgram().getProgram()
+
+    console.log("start watching ...")
+    console.log(`target file: ${output}`)
+  } else {
+    program = createProgram(tsconfigPath)
+  }
+
+  generateCode(program, files, output, option)
+}
+
+const generateCode = (
+  program: ts.Program,
+  files: string[],
+  output: string,
+  { asserts }: GenerateOption
+) => {
+  const handler = new CompilerApiHandler(program)
 
   const types = files.map((filePath) => {
     const result = handler.extractTypes(filePath)

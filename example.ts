@@ -5,9 +5,12 @@ import { generate } from "./src/cli"
 
   generate({
     tsconfigPath,
-    output: resolve(__dirname, "./example/generated.ts"),
-    basePath: resolve(__dirname, "./example"),
     fileGlobs: ["**/*.ts"],
-    asserts: true,
+    basePath: resolve(__dirname, "./example"),
+    output: resolve(__dirname, "./example/generated.ts"),
+    option: {
+      watch: true,
+      asserts: true,
+    },
   })
 })()

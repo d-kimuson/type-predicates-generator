@@ -39,7 +39,8 @@ export const createProgram = (tsConfigPath: string): ts.Program => {
 export function watchCompiler(
   tsConfigPath: string,
   reportDiagnostic?: ts.DiagnosticReporter,
-  reportWatchStatus?: ts.WatchStatusReporter
+  reportWatchStatus?: ts.WatchStatusReporter,
+  watchOption?: ts.WatchOptions
 ): ts.WatchOfConfigFile<ts.SemanticDiagnosticsBuilderProgram> {
   const createProgram = createEmitAndSemanticDiagnosticsBuilderProgram
   const host = createWatchCompilerHost(
@@ -50,7 +51,8 @@ export function watchCompiler(
     sys,
     createProgram,
     reportDiagnostic,
-    reportWatchStatus
+    reportWatchStatus,
+    watchOption
   )
   return createWatchProgram(host)
 }
