@@ -23,7 +23,8 @@ const { options } = parseJsonConfigFileContent(
 
 module.exports = {
   roots: ["<rootDir>"],
-  testMatch: ["**/?(*.)+(spec|test).+(ts|tsx|js)"],
+  testMatch: ["**/tests/**/?(*.)+(spec|test).+(ts|tsx|js)"],
+  testPathIgnorePatterns: ["<rootDir>/example/"],
   globals: {
     "ts-jest": {
       tsconfig: "tests/tsconfig.json",
