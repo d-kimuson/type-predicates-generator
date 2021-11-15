@@ -16,6 +16,7 @@ const specialTypePredicateNameMap = {
   unknown: "isUnknown",
   never: "isNever",
   void: "isVoid",
+  Date: "isDate",
 }
 
 const primitiveTypePredicateMap = {
@@ -33,10 +34,12 @@ const specialTypePredicateMap = {
   null: "const isNull = (value: unknown): value is null => value === null;",
   undefined:
     "const isUndefined = (value: unknown): value is undefined => typeof value === 'undefined';",
-  any: "const isAny = () => true;",
-  unknown: "const isUnknown = () => true;",
-  never: "const isNever = () => false;",
-  void: "const isVoid = () => false;",
+  any: "const isAny = (value: unknown): value is any => true;",
+  unknown: "const isUnknown = (value: unknown): value is unknown => true;",
+  never: "const isNever = (value: unknown): value is never => false;",
+  void: "const isVoid = (value: unknown): value is void => false;",
+  Date: `const isDate = (value: unknown): value is Date =>
+    value instanceof Date || Object.prototype.toString.call(value) === '[Object Date]'`,
 }
 
 const utilTypePredicateMap = {

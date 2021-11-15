@@ -1,9 +1,12 @@
 import * as ts from "typescript"
-import { forEachChild, ArrayTypeNode } from "typescript"
+import {
+  forEachChild,
+  unescapeLeadingUnderscores,
+} from "typescript"
 import { Result, ok, ng, switchExpression, isOk } from "~/utils"
 
 import type * as to from "../type-object"
-import { primitive, special } from "../type-object"
+import { primitive, special, skip } from "../type-object"
 
 const genericsTypeText = /(.*?)<(.*?)>/
 
@@ -70,36 +73,43 @@ export class CompilerApiHandler {
       tsType,
       typeName: this.#typeToString(tsType),
       getProps: () =>
-        this.#typeChecker.getPropertiesOfType(tsType).map(
-          (
-            symbol
-          ): {
-            propName: string
-            type: to.TypeObject
-          } => {
-            const typeNode = symbol.valueDeclaration?.type
+        this.#typeChecker
+          .getPropertiesOfType(tsType)
+          .map(
+            (
+              symbol
+            ): {
+              propName: string
+              type: to.TypeObject
+            } => {
+              const typeNode = symbol.valueDeclaration?.type
+              const declare = (symbol.declarations ?? [])[0]
+              const type = declare
+                ? this.#typeChecker.getTypeOfSymbolAtLocation(symbol, declare)
+                : undefined
 
-            return {
-              propName: String(symbol.escapedName),
-              type:
-                typeNode && ts.isArrayTypeNode(typeNode)
-                  ? {
-                      __type: "ArrayTO",
-                      typeName: this.#typeToString(
-                        this.#typeChecker.getTypeFromTypeNode(typeNode)
-                      ),
-                      child: this.#extractArrayTFromTypeNode(typeNode),
-                    }
-                  : typeNode
-                  ? this.#convertType(
-                      this.#typeChecker.getTypeFromTypeNode(typeNode)
-                    )
-                  : {
-                      __type: "UnknownTO",
-                    },
+              return {
+                propName: String(symbol.escapedName),
+                type:
+                  typeNode && ts.isArrayTypeNode(typeNode)
+                    ? {
+                        __type: "ArrayTO",
+                        typeName: this.#typeToString(
+                          this.#typeChecker.getTypeFromTypeNode(typeNode)
+                        ),
+                        child: this.#extractArrayTFromTypeNode(typeNode),
+                      }
+                    : type
+                    ? this.#isCallable(type)
+                      ? skip()
+                      : this.#convertType(type)
+                    : {
+                        __type: "UnknownTO",
+                      },
+              }
             }
-          }
-        ),
+          )
+          .filter((typeObject) => typeObject.type.__type !== "SkipTO"),
     }
   }
 
@@ -231,6 +241,10 @@ export class CompilerApiHandler {
         ({ typeText }) => typeText === "never",
         special("never")
       )
+      .case<to.SpecialTO>(
+        ({ typeText }) => typeText === "Date",
+        special("Date")
+      )
       .case<to.ArrayTO>(
         ({ type, typeText }) =>
           typeText.endsWith("[]") || type.symbol?.escapedName === "Array",
@@ -252,6 +266,25 @@ export class CompilerApiHandler {
       .default<to.UnknownTO>({
         __type: "UnknownTO",
       })
+  }
+
+  #isCallable(type: ts.Type): boolean {
+    return (
+      this.#getMembers(type).findIndex(
+        (member) =>
+          unescapeLeadingUnderscores(member.getEscapedName()) === "__call"
+      ) >= 0
+    )
+  }
+
+  #getMembers(type: ts.Type): ts.Symbol[] {
+    const members: ts.Symbol[] = []
+
+    type.getSymbol()?.members?.forEach((memberSymbol) => {
+      members.push(memberSymbol)
+    })
+
+    return members
   }
 
   #typeToString(type: ts.Type) {

@@ -174,6 +174,30 @@ describe("convertType", () => {
           },
         },
       },
+      {
+        propName: "maybeName",
+        type: {
+          __type: "UnionTO",
+          typeName: "string | undefined",
+          unions: [
+            {
+              __type: "SpecialTO",
+              kind: "undefined",
+            },
+            {
+              __type: "PrimitiveTO",
+              kind: "string",
+            },
+          ],
+        },
+      },
+      {
+        propName: "time",
+        type: {
+          __type: "SpecialTO",
+          kind: "Date",
+        },
+      },
     ])
 
     expect(type2?.type.__type).toStrictEqual("ObjectTO")
