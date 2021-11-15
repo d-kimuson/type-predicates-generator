@@ -5,8 +5,6 @@ import type { Result } from "~/utils"
 import { ok, ng, switchExpression, isOk } from "~/utils"
 import { primitive, special, skip } from "../type-object"
 
-const genericsTypeText = /(.*?)<(.*?)>/
-
 export class CompilerApiHandler {
   #program: ts.Program
   #typeChecker: ts.TypeChecker
@@ -37,11 +35,10 @@ export class CompilerApiHandler {
       )
       // @ts-expect-error exclude not exported type def
       .filter((node) => typeof node?.localSymbol !== "undefined")
-      .filter(
-        (node) =>
-          !genericsTypeText.test(
-            this.#typeToString(this.#typeChecker.getTypeAtLocation(node))
-          )
+      .filter((node) =>
+        this.#isTypeParametersResolved(
+          this.#typeChecker.getTypeAtLocation(node)
+        )
       )
 
     return ok(
@@ -282,6 +279,14 @@ export class CompilerApiHandler {
     })
 
     return members
+  }
+
+  #isTypeParametersResolved(type: ts.Type): boolean {
+    // @ts-expect-error: wrong type def
+    return (
+      (type.aliasTypeArguments ?? []).length === 0 ||
+      type.typeParameter !== undefined
+    )
   }
 
   #typeToString(type: ts.Type) {

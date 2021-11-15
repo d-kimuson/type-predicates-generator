@@ -230,8 +230,54 @@ describe("convertType", () => {
     )
     expect(isOk(typesResult)).toBe(true)
     if (isOk(typesResult)) {
-      const types = typesResult.ok
-      expect(types.length).toStrictEqual(0)
+      const [type_0, type_1] = typesResult.ok
+      expect(type_0).toBeDefined()
+      expect(type_1).not.toBeDefined()
+      if (!type_0) return
+
+      expect(type_0.typeName).toBe("ResultOfGenerics")
+      expect(type_0.type.__type).toBe("ObjectTO")
+
+      if (type_0.type.__type !== "ObjectTO") {
+        return
+      }
+
+      expect(type_0.type.getProps()).toStrictEqual([
+        {
+          propName: "id",
+          type: {
+            __type: "UnionTO",
+            typeName: "number | undefined",
+            unions: [
+              {
+                __type: "SpecialTO",
+                kind: "undefined",
+              },
+              {
+                __type: "PrimitiveTO",
+                kind: "number",
+              },
+            ],
+          },
+        },
+        {
+          propName: "time",
+          type: {
+            __type: "UnionTO",
+            typeName: "Date | undefined",
+            unions: [
+              {
+                __type: "SpecialTO",
+                kind: "undefined",
+              },
+              {
+                __type: "SpecialTO",
+                kind: "Date",
+              },
+            ],
+          },
+        },
+      ])
     }
   })
 })
