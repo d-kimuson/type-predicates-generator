@@ -1,12 +1,12 @@
-import type * as ts from "typescript"
-import { WatchFileKind } from "typescript"
-import * as glob from "glob"
-import * as to from "~/type-object"
 import { writeFileSync } from "fs"
 import { resolve, relative } from "path"
-import { createProgram, watchCompiler } from "~/compiler-api/program"
+import * as glob from "glob"
+import { WatchFileKind } from "typescript"
+import type * as ts from "typescript"
 import { CompilerApiHandler } from "~/compiler-api/compiler-api-handler"
+import { createProgram, watchCompiler } from "~/compiler-api/program"
 import { generateTypePredicates } from "~/generate/generate-type-predicates"
+import type * as to from "~/type-object"
 import { isNg } from "~/utils"
 
 type GenerateOption = {
@@ -53,7 +53,10 @@ export async function run({
         watchFile: WatchFileKind.UseFsEvents,
         excludeFiles: [output],
       },
+      // デフォルトのメソッドを打ち消すため
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       () => {}
     )
 

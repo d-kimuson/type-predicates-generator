@@ -8,5 +8,5 @@
     "strict": true,
     "moduleResolution": "node"
   },
-  "include": ["."],
+  "include": ["."]
 }

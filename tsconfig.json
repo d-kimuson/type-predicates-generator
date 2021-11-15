@@ -17,8 +17,9 @@
     "skipLibCheck": true,
     "noUncheckedIndexedAccess": true,
     "noErrorTruncation": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": false
   },
   "files": ["example.ts"],
-  "include": ["src"],
+  "include": ["src"]
 }

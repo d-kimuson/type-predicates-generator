@@ -1,5 +1,5 @@
-import { uniq } from "ramda"
 import * as dedent from "dedent"
+import { uniq } from "ramda"
 import type * as to from "../type-object"
 
 const primitiveTypePredicateNameMap = {

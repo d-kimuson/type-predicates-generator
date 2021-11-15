@@ -1,11 +1,8 @@
 import * as ts from "typescript"
-import {
-  forEachChild,
-  unescapeLeadingUnderscores,
-} from "typescript"
-import { Result, ok, ng, switchExpression, isOk } from "~/utils"
-
+import { forEachChild, unescapeLeadingUnderscores } from "typescript"
 import type * as to from "../type-object"
+import type { Result } from "~/utils"
+import { ok, ng, switchExpression, isOk } from "~/utils"
 import { primitive, special, skip } from "../type-object"
 
 const genericsTypeText = /(.*?)<(.*?)>/

@@ -1,4 +1,3 @@
-import type * as ts from "typescript"
 import { resolve } from "path"
 import {
   sys,
@@ -9,6 +8,7 @@ import {
   createWatchCompilerHost,
   createEmitAndSemanticDiagnosticsBuilderProgram,
 } from "typescript"
+import type * as ts from "typescript"
 
 export const createProgram = (tsConfigPath: string): ts.Program => {
   const configFile = readConfigFile(tsConfigPath, sys.readFile)
