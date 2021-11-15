@@ -1,0 +1,12 @@
+{
+  // ESLint
+  "eslint.workingDirectories": ["./"],
+  "eslint.options": {
+    "overrideConfigFile": ".eslintrc.js",
+    "extensions": ["ts"]
+  },
+  "eslint.validate": ["typescript"],
+  // prettier
+  "prettier.enable": true,
+  "prettier.configPath": "./.prettierrc.js"
+}
