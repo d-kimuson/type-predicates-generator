@@ -1,10 +1,19 @@
 {
   "name": "type-predicates-generator",
-  "version": "0.0.1",
+  "description": "Predicate and assert functions generator from type definitions.",
+  "version": "0.0.0",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
+  "author": "d-kimuson",
   "bin": {
     "type-predicates-generator": "dist/src/cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/d-kimuson/type-predicates-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/d-kimuson/type-predicates-generator/issues"
   },
   "license": "MIT",
   "scripts": {
@@ -14,6 +23,7 @@
     "build": "tsc -p . && tsc-alias -p tsconfig.json",
     "test": "jest",
     "test:watch": "jest --watch",
+    "prepublishOnly": "yarn build",
     "patch": "patch-package"
   },
   "dependencies": {
