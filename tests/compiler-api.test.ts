@@ -11,7 +11,9 @@ describe("compilerApi", () => {
 
   it("watchCompiler", () => {
     const watcher = watchCompiler(
-      resolve(__dirname, "../example/tsconfig.json")
+      resolve(__dirname, "../example/tsconfig.json"),
+      [],
+      () => {}
     )
     const program = watcher.getProgram().getProgram()
     expect(program).toBeDefined()
