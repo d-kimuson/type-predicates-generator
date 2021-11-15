@@ -1,4 +1,5 @@
 import type * as ts from "typescript"
+import { WatchFileKind } from "typescript"
 import * as glob from "glob"
 import * as to from "~/type-object"
 import { writeFileSync } from "fs"
@@ -31,24 +32,29 @@ export async function run({
       glob.sync(fileGlob, {
         sync: true,
         cwd: basePath,
+        ignore: ["**/node_modules/**/*.ts", output],
       })
     )
     .map((filePath) => resolve(basePath, filePath))
+    .filter((filePath) => filePath !== output)
 
   let program: ts.Program
   if (option.watch) {
     let onUpdate: (() => void) | undefined = undefined
     const watcher = watchCompiler(
       tsconfigPath,
-      () => {},
-      ({ code }) => {
-        if (onUpdate && code === 6194 /* after compiled */) {
+      files,
+      () => {
+        if (onUpdate) {
           onUpdate()
         }
       },
       {
+        watchFile: WatchFileKind.UseFsEvents,
         excludeFiles: [output],
-      }
+      },
+      () => {},
+      () => {}
     )
 
     onUpdate = () => {
@@ -82,7 +88,7 @@ const generateAndWriteCodes = (
       "./" + relative(resolve(output, ".."), filePath).replace(".ts", "")
 
     if (isNg(result)) {
-      throw Error("Fail to extract files")
+      throw Error(`Fail to extract types from ${filePath}`)
     }
 
     return {

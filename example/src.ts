@@ -1,4 +1,4 @@
-import { isUser, assertIsUser } from "./generated"
+import { isUser, assertIsUser } from "./type-predicates"
 
 let maybeUser: unknown
 if (isUser(maybeUser)) {

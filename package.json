@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
+  "bin": {
+    "type-predicates-generator": "dist/src/cli.js"
+  },
   "license": "MIT",
   "scripts": {
     "generate:example": "ts-node -r tsconfig-paths/register example.ts",
@@ -11,7 +14,7 @@
     "build": "tsc -p . && tsc-alias -p tsconfig.json",
     "test": "jest",
     "test:watch": "jest --watch",
-    "postinstall": "patch-package"
+    "patch": "patch-package"
   },
   "dependencies": {
     "commander": "^8.3.0",

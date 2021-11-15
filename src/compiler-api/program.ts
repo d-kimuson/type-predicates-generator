@@ -38,9 +38,11 @@ export const createProgram = (tsConfigPath: string): ts.Program => {
 // watch しなくて良いときは createProgram から
 export function watchCompiler(
   tsConfigPath: string,
+  watchFiles: string[] = [],
+  onFileChanged: ts.FileWatcherCallback,
+  watchOption?: ts.WatchOptions,
   reportDiagnostic?: ts.DiagnosticReporter,
-  reportWatchStatus?: ts.WatchStatusReporter,
-  watchOption?: ts.WatchOptions
+  reportWatchStatus?: ts.WatchStatusReporter
 ): ts.WatchOfConfigFile<ts.EmitAndSemanticDiagnosticsBuilderProgram> {
   const createProgram = createEmitAndSemanticDiagnosticsBuilderProgram
   const host = createWatchCompilerHost(
@@ -54,5 +56,8 @@ export function watchCompiler(
     reportWatchStatus,
     watchOption
   )
+  watchFiles.forEach((file) => {
+    host.watchFile(file, onFileChanged)
+  })
   return createWatchProgram(host)
 }

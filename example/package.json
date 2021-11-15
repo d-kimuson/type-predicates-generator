@@ -1,0 +1,16 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "codegen:tpg": "type-predicates-generator -a",
+    "watch:tpg": "yarn codegen:tpg -w"
+  },
+  "dependencies": {
+    "type-predicates-generator": "../"
+  },
+  "devDependencies": {
+    "typescript": "^4.4.4"
+  }
+}
