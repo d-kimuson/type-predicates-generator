@@ -61,17 +61,17 @@ export async function run({
       const updatedProgram = watcher.getProgram().getProgram()
       generateAndWriteCodes(updatedProgram, files, output, option)
 
-      console.log("successfully generated")
+      console.log("File changes are detected, and successfully regenerated.")
     }
     program = watcher.getProgram().getProgram()
 
     console.log("start watching ...")
-    console.log(`target file: ${output}`)
   } else {
     program = createProgram(tsconfigPath)
   }
 
   generateAndWriteCodes(program, files, output, option)
+  console.log(`successfully generated: ${output}`)
 }
 
 const generateAndWriteCodes = (
