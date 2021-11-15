@@ -5,6 +5,8 @@ import { Result, ok, ng, switchExpression, isOk } from "~/utils"
 import type * as to from "../type-object"
 import { primitive, special } from "../type-object"
 
+const genericsTypeText = /(.*?)<(.*?)>/
+
 export class CompilerApiHandler {
   #program: ts.Program
   #typeChecker: ts.TypeChecker
@@ -35,6 +37,12 @@ export class CompilerApiHandler {
       )
       // @ts-expect-error exclude not exported type def
       .filter((node) => typeof node?.localSymbol !== "undefined")
+      .filter(
+        (node) =>
+          !genericsTypeText.test(
+            this.#typeToString(this.#typeChecker.getTypeAtLocation(node))
+          )
+      )
 
     return ok(
       nodes.map((node) => ({

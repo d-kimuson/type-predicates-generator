@@ -199,4 +199,16 @@ describe("convertType", () => {
       })
     }
   })
+
+  it("generics", () => {
+    const typesResult = handler.extractTypes(
+      resolve(__dirname, "../example/types/generics.ts")
+    )
+    expect(isOk(typesResult)).toBe(true)
+    if (isOk(typesResult)) {
+      const types = typesResult.ok
+      console.log(types)
+      expect(types.length).toStrictEqual(0)
+    }
+  })
 })
