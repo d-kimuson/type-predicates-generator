@@ -12,6 +12,7 @@ import { isNg } from "~/utils"
 type GenerateOption = {
   asserts: boolean
   watch: boolean
+  strictArrayCheck: boolean
 }
 
 export async function run({
@@ -81,7 +82,7 @@ const generateAndWriteCodes = (
   program: ts.Program,
   files: string[],
   output: string,
-  { asserts }: GenerateOption
+  { asserts, strictArrayCheck }: GenerateOption
 ) => {
   const handler = new CompilerApiHandler(program)
 
@@ -107,6 +108,6 @@ const generateAndWriteCodes = (
     }
   })
 
-  const generatedCode = generateTypePredicates(types, asserts)
+  const generatedCode = generateTypePredicates(types, asserts, strictArrayCheck)
   writeFileSync(output, generatedCode)
 }

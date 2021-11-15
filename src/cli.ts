@@ -19,6 +19,11 @@ program
   .option("-b, --base-path <type>", "project base path", "./")
   .option("-a, --asserts", "generate assert functions or not", false)
   .option("-w, --watch", "watch or not", false)
+  .option(
+    "--strict-array-check",
+    "check all elements (or only first element) if they match the element type",
+    false
+  )
   .parse(process.argv)
 
 const option = program.opts<{
@@ -26,8 +31,9 @@ const option = program.opts<{
   fileGlob: string
   output: string
   basePath: string
-  asserts: false
-  watch: true
+  asserts: boolean
+  watch: boolean
+  strictArrayCheck: boolean
 }>()
 
 const cwd = process.cwd()
@@ -40,5 +46,6 @@ run({
   option: {
     asserts: option.asserts,
     watch: option.watch,
+    strictArrayCheck: option.strictArrayCheck,
   },
 })

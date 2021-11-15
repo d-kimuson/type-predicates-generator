@@ -67,7 +67,8 @@ export function generateTypePredicates(
       type: to.TypeObject
     }[]
   }[],
-  asserts = false
+  asserts = false,
+  strictArrayCheck = false
 ): string {
   const usedPrimitives: to.PrimitiveTO["kind"][] = []
   const usedSpecials: to.SpecialTO["kind"][] = []
@@ -118,14 +119,20 @@ export function generateTypePredicates(
         )
         .join(" || ")}`
     } else if (type.__type === "ArrayTO") {
+      const checkChildFn = generateCheckFn({
+        type: type.child,
+        parentArgCount: argCount,
+      })
+
       return `${generateDeclare(
         argName(),
         typeName
       )}Array.isArray(${argName()}) &&
-      ${argName()}.reduce((s: boolean, t: unknown) => s && (${generateCheckFn({
-        type: type.child,
-        parentArgCount: argCount,
-      })})(t) , true)`
+      ${
+        strictArrayCheck
+          ? `${argName()}.reduce((s: boolean, t: unknown) => s && (${checkChildFn})(t) , true)`
+          : `(${argName()}[0] === undefined || (${checkChildFn})(${argName()}[0]))`
+      }`
     } else if (type.__type === "ObjectTO") {
       usedUtils.push("object")
       return `${generateDeclare(argName(), typeName)}isObject(${argName()}) &&
