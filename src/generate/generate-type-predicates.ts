@@ -51,8 +51,8 @@ function isPossibleUseTypeName(
 }
 
 function generateDeclare(argName: string, typeName?: string) {
-  return `(${argName}: unknown)${
-    typeName ? `: ${argName} is ${typeName}` : ""
+  return `(${argName}: unknown): ${
+    typeName ? `${argName} is ${typeName}` : "boolean"
   } => `
 }
 
