@@ -231,7 +231,6 @@ describe("convertType", () => {
     expect(isOk(typesResult)).toBe(true)
     if (isOk(typesResult)) {
       const types = typesResult.ok
-      console.log(types)
       expect(types.length).toStrictEqual(0)
     }
   })
