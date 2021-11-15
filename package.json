@@ -31,8 +31,18 @@
     "build": "tsc -p . && tsc-alias -p tsconfig.json",
     "test": "jest",
     "test:watch": "jest --watch",
+    "lint-staged": "lint-staged --allow-empty",
+    "prepare": "husky install",
     "prepublishOnly": "yarn build",
     "patch": "patch-package"
+  },
+  "lint-staged": {
+    "**/*.ts": [
+      "eslint --fix"
+    ],
+    "**/*.{ts,js,json,md}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "commander": "^8.3.0",
@@ -53,7 +63,9 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-import-resolver-typescript": "^2.5.0",
     "eslint-plugin-import": "^2.25.3",
+    "husky": "^7.0.4",
     "jest": "^27.3.1",
+    "lint-staged": "^12.0.2",
     "npm-run-all": "^4.1.5",
     "patch-package": "^6.4.7",
     "postinstall-postinstall": "^2.1.0",
