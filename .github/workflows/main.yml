@@ -44,3 +44,11 @@ jobs:
     - name: check successfully build
       run: |
         yarn build
+
+    - name: check generated codes
+      run: |
+        cd example
+        yarn install
+        yarn codegen:tpg
+        yarn typecheck
+        yarn test

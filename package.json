@@ -18,7 +18,7 @@
   "license": "MIT",
   "scripts": {
     "generate:example": "ts-node -r tsconfig-paths/register example.ts",
-    "cli:example": "cd example && node ../dist/src/index.js",
+    "cli:example": "cd example && node ../dist/src/cli.js",
     "precli:example": "yarn build",
     "typecheck": "tsc -p . --noEmit",
     "lint": "run-s lint:*",
