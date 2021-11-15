@@ -3,10 +3,10 @@
     "module": "esnext",
     "target": "esnext",
     "lib": ["esnext"],
-    // "rootDir": ".",
-    // "baseUrl": ".",
     "strict": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "esModuleInterop": true
   },
-  "include": ["."]
+  "files": ["src.ts"],
+  "include": ["types"]
 }
