@@ -152,7 +152,7 @@ export function generateTypePredicates(
     return `/* WARN: Not Supported Type */ (value: unknown)${
       typeof typeName === "string" ? `:value is ${typeName}` : ""
     } => {
-      console.warn("check was skipped bacause '${typeName}' is not supported type.");
+      console.warn("check was skipped bacause \${value} is not supported type.");
       return true;
     }`
   }
