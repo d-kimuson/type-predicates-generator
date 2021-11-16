@@ -39,7 +39,7 @@ const specialTypePredicateMap = {
   never: "const isNever = (value: unknown): value is never => false;",
   void: "const isVoid = (value: unknown): value is void => false;",
   Date: `const isDate = (value: unknown): value is Date =>
-    value instanceof Date || Object.prototype.toString.call(value) === '[Object Date]'`,
+      value instanceof Date || Object.prototype.toString.call(value) === '[Object Date]'`,
 }
 
 const utilTypePredicateMap = {
@@ -154,7 +154,7 @@ export function generateTypePredicates(
     return `/* WARN: Not Supported Type */ (value: unknown)${
       typeof typeName === "string" ? `:value is ${typeName}` : ""
     } => {
-      console.warn("check was skipped bacause \${value} is not supported type.");
+      console.warn(\`check was skipped bacause \${value} is not supported type.\`);
       return true;
     }`
   }
@@ -164,19 +164,16 @@ export function generateTypePredicates(
     // Do not generate predicates for top-level unknown type
     .filter((file) => file.type.__type !== "UnknownTO")
     .map(
-      ({ type, typeName }) => `
-    export const is${typeName} = ${generateCheckFn({
+      ({ type, typeName }) => `export const is${typeName} = ${generateCheckFn({
         type,
         typeName,
         parentArgCount: -1,
       })};
     ${
       asserts
-        ? `
-    export function assertIs${typeName}(value: unknown): asserts value is ${typeName} {
+        ? `export function assertIs${typeName}(value: unknown): asserts value is ${typeName} {
       if (!is${typeName}(value)) throw new TypeError(\`value must be ${typeName} but received \${value}\`)
-    }
-    `
+    };`
         : ""
     }`
     )
@@ -198,7 +195,8 @@ export function generateTypePredicates(
             .map(({ typeName }) => typeName)
             .join(", ")} } from '${importPath}'`
       )
-      .join(";\n")}
+      .join(";\n")};
+
     ${corePredicates.join("\n")}
 
     ${checkFns.map((checkFn) => checkFn).join("\n")}
