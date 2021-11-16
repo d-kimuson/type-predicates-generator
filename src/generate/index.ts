@@ -91,8 +91,8 @@ const generateAndWriteCodes = (
     const importPath =
       "./" +
       relative(resolve(output, ".."), filePath)
-        .replace(".ts", "")
         .replace(".d.ts", "")
+        .replace(".ts", "")
 
     if (isNg(result)) {
       throw Error(`Fail to extract types from ${filePath}`)
