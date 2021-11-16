@@ -160,12 +160,25 @@ export function generateTypePredicates(
         .join(" && ")}`
     } else if (type.__type === "TypeParameterTO") {
       return `(_) => true`
+    } else if (type.__type === "TupleTO") {
+      return `${generateDeclare(
+        argName(),
+        typeName
+      )}Array.isArray(${argName()}) && (${type.items
+        .map(
+          (item, index) =>
+            `(${generateCheckFn({
+              type: item,
+              parentArgCount: argCount,
+            })})(${argName()}[${index}])`
+        )
+        .join(" && ")})`
     }
 
     console.warn(
-      `type check ${
-        typeName ? `for ${typeName}` : ""
-      } will be skipped because not supported. `
+      `type check${
+        typeName ? ` for ${typeName} ` : " "
+      }will be skipped because not supported. `
     )
     return `/* WARN: Not Supported Type */ (value: unknown)${
       typeof typeName === "string" ? `:value is ${typeName}` : ""

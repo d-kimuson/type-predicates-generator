@@ -207,92 +207,116 @@ export class CompilerApiHandler {
   #convertType(type: ts.Type): to.TypeObject {
     return switchExpression({
       type,
+      typeNode: type.node,
       typeText: this.#typeToString(type),
     })
-      .case<to.UnionTO>(({ type }) => type.isUnion(), {
-        __type: "UnionTO",
-        typeName: this.#typeToString(type),
-        unions: (type?.types ?? []).map((type) => this.#convertType(type)),
-      })
-      .case<to.TypeParameterTO>(({ type }) => type.isTypeParameter(), {
-        __type: "TypeParameterTO",
-        name: this.#typeToString(type),
-      })
-      .case<to.LiteralTO>(({ type }) => type.isLiteral(), {
-        __type: "LiteralTO",
-        value: type.value,
-      })
+      .case<to.UnionTO>(
+        ({ type }) => type.isUnion(),
+        ({ typeText }) => ({
+          __type: "UnionTO",
+          typeName: typeText,
+          unions: (type?.types ?? []).map((type) => this.#convertType(type)),
+        })
+      )
+      .case<to.TypeParameterTO>(
+        ({ type }) => type.isTypeParameter(),
+        ({ typeText }) => ({
+          __type: "TypeParameterTO",
+          name: typeText,
+        })
+      )
+      .case<to.TupleTO, { typeNode: ts.TupleTypeNode }>(
+        ({ typeNode }) =>
+          typeof typeNode !== "undefined" && ts.isTupleTypeNode(typeNode),
+        ({ typeText, typeNode }) => ({
+          __type: "TupleTO",
+          typeName: typeText,
+          items: typeNode.elements.map((typeNode) =>
+            this.#convertType(this.#typeChecker.getTypeFromTypeNode(typeNode))
+          ),
+        })
+      )
+      .case<to.LiteralTO>(
+        ({ type }) => type.isLiteral(),
+        ({ type }) => ({
+          __type: "LiteralTO",
+          value: type.value,
+        })
+      )
       .case<to.LiteralTO>(
         ({ typeText }) => ["true", "false"].includes(typeText),
-        {
+        ({ typeText }) => ({
           __type: "LiteralTO",
-          value: this.#typeToString(type) === "true" ? true : false,
-        }
+          value: typeText === "true" ? true : false,
+        })
       )
       .case<to.PrimitiveTO>(
         ({ typeText }) => typeText === "string",
-        primitive("string")
+        () => primitive("string")
       )
       .case<to.PrimitiveTO>(
         ({ typeText }) => typeText === "number",
-        primitive("number")
+        () => primitive("number")
       )
       .case<to.PrimitiveTO>(
         ({ typeText }) => typeText === "bigint",
-        primitive("bigint")
+        () => primitive("bigint")
       )
       .case<to.PrimitiveTO>(
         ({ typeText }) => typeText === "boolean",
-        primitive("boolean")
+        () => primitive("boolean")
       )
       .case<to.SpecialTO>(
         ({ typeText }) => typeText === "null",
-        special("null")
+        () => special("null")
       )
       .case<to.SpecialTO>(
         ({ typeText }) => typeText === "undefined",
-        special("undefined")
+        () => special("undefined")
       )
       .case<to.SpecialTO>(
         ({ typeText }) => typeText === "void",
-        special("void")
+        () => special("void")
       )
-      .case<to.SpecialTO>(({ typeText }) => typeText === "any", special("any"))
+      .case<to.SpecialTO>(
+        ({ typeText }) => typeText === "any",
+        () => special("any")
+      )
       .case<to.SpecialTO>(
         ({ typeText }) => typeText === "unknown",
-        special("unknown")
+        () => special("unknown")
       )
       .case<to.SpecialTO>(
         ({ typeText }) => typeText === "never",
-        special("never")
+        () => special("never")
       )
       .case<to.SpecialTO>(
         ({ typeText }) => typeText === "Date",
-        special("Date")
+        () => special("Date")
       )
       .case<to.ArrayTO>(
         ({ type, typeText }) =>
           typeText.endsWith("[]") || type.symbol?.escapedName === "Array",
-        {
+        ({ type, typeText }) => ({
           __type: "ArrayTO",
-          typeName: this.#typeToString(type),
+          typeName: typeText,
           child: (() => {
             const resultT = this.#extractArrayT(type)
             return isOk(resultT)
               ? resultT.ok
               : ({ __type: "UnknownTO", kind: "arrayT" } as const)
           })(),
-        }
+        })
       )
       .case<to.ObjectTO>(
         ({ type }) => this.#typeChecker.getPropertiesOfType(type).length !== 0,
-        this.#createObjectType(type)
+        ({ type }) => this.#createObjectType(type)
       )
-      .default<to.UnknownTO>({
+      .default<to.UnknownTO>(({ typeText }) => ({
         __type: "UnknownTO",
         kind: "convert",
-        typeText: this.#typeToString(type),
-      })
+        typeText,
+      }))
   }
 
   #isCallable(type: ts.Type): boolean {

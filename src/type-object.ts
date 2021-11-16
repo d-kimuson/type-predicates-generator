@@ -5,6 +5,7 @@ export type TypeObject =
   | LiteralTO
   | SpecialTO
   | ArrayTO
+  | TupleTO
   | ObjectTO
   | UnionTO
   | TypeParameterTO
@@ -33,6 +34,11 @@ export type LiteralTO = {
 export type ArrayTO = TypeNameTrait & {
   __type: "ArrayTO"
   child: TypeObject
+}
+
+export type TupleTO = TypeNameTrait & {
+  __type: "TupleTO"
+  items: TypeObject[]
 }
 
 export type ObjectTO = TypeNameTrait & {
