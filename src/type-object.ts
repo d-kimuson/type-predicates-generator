@@ -7,6 +7,7 @@ export type TypeObject =
   | ArrayTO
   | ObjectTO
   | UnionTO
+  | TypeParameterTO
   | UnknownTO
   | SkipTO
 
@@ -46,6 +47,11 @@ export type ObjectTO = TypeNameTrait & {
 export type UnionTO = TypeNameTrait & {
   __type: "UnionTO"
   unions: TypeObject[]
+}
+
+export type TypeParameterTO = {
+  __type: "TypeParameterTO"
+  name: string
 }
 
 // サポートしてない型(スキップする)

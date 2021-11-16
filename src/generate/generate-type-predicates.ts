@@ -146,6 +146,8 @@ export function generateTypePredicates(
             })})(${argName()}['${prop.propName}']))`
         )
         .join(" && ")}`
+    } else if (type.__type === "TypeParameterTO") {
+      return `(_) => true`
     }
 
     console.warn(`${typeName} will be skipped because not supported.`)
@@ -159,6 +161,8 @@ export function generateTypePredicates(
 
   const checkFns = files
     .flatMap((file) => file.types)
+    // Do not generate predicates for top-level unknown type
+    .filter((file) => file.type.__type !== "UnknownTO")
     .map(
       ({ type, typeName }) => `
     export const is${typeName} = ${generateCheckFn({

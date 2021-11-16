@@ -49,6 +49,7 @@ export class CompilerApiHandler {
             : undefined,
         type: this.#convertType(this.#typeChecker.getTypeAtLocation(node)),
       }))
+      // .filter(({ type }) => !this.#hasTypeParameter(type))
     )
   }
 
@@ -177,6 +178,31 @@ export class CompilerApiHandler {
     )
   }
 
+  #hasUnresolvedTypeParameter(type: to.TypeObject): boolean {
+    if (!("typeName" in type)) {
+      return type.__type === "TypeParameterTO"
+    }
+
+    const deps: to.TypeObject[] =
+      type.__type === "ObjectTO"
+        ? type.getProps().map((prop) => prop.type)
+        : type.__type === "ArrayTO"
+        ? [type.child]
+        : type.__type === "UnionTO"
+        ? type.unions
+        : []
+
+    return deps.reduce(
+      (s: boolean, t: to.TypeObject) =>
+        s ||
+        t.__type === "TypeParameterTO" ||
+        ("typeName" in t &&
+          t.typeName !== type.typeName &&
+          this.#hasUnresolvedTypeParameter(t)),
+      false
+    )
+  }
+
   #convertType(type: ts.Type): to.TypeObject {
     return switchExpression({
       type,
@@ -186,6 +212,10 @@ export class CompilerApiHandler {
         __type: "UnionTO",
         typeName: this.#typeToString(type),
         unions: (type?.types ?? []).map((type) => this.#convertType(type)),
+      })
+      .case<to.TypeParameterTO>(({ type }) => type.isTypeParameter(), {
+        __type: "TypeParameterTO",
+        name: this.#typeToString(type),
       })
       .case<to.LiteralTO>(({ type }) => type.isLiteral(), {
         __type: "LiteralTO",
