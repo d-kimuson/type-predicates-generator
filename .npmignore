@@ -5,3 +5,8 @@
 /patches
 /.vscode
 tsconfig.json
+/.github
+/.husky
+/.eslintrc.js
+/example.ts
+/jest.config.js
