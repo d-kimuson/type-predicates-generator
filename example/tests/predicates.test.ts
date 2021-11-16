@@ -7,7 +7,6 @@ import {
   isTrue,
   isUnion,
   isArrStr,
-  isArrStr2,
   isObj,
 } from "../type-predicates"
 
@@ -96,5 +95,13 @@ describe("object", () => {
 
     expect(isObj({})).toBe(false) // empty
     expect(isObj(undefined)).toBe(false) // not object
+  })
+
+  it('ommitable property', () => {
+    expect(isObj({
+        name: "taro",
+        names: ["taro"],
+        time: new Date(),
+    })).toBe(true)
   })
 })

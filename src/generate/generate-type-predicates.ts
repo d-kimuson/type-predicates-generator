@@ -59,6 +59,16 @@ function generateDeclare(argName: string, typeName?: string) {
   } => `
 }
 
+export function isMaybeUndefined(type: to.TypeObject): boolean {
+  return (
+    (type.__type === "SpecialTO" && type.kind === "undefined") ||
+    (type.__type === "UnionTO" &&
+      typeof type.unions.find(
+        (union) => union.__type === "SpecialTO" && union.kind === "undefined"
+      ) !== "undefined")
+  )
+}
+
 export function generateTypePredicates(
   files: {
     importPath: string
@@ -139,11 +149,13 @@ export function generateTypePredicates(
       ${type
         .getProps()
         .map(
-          (prop) =>
-            `('${prop.propName}' in ${argName()} && (${generateCheckFn({
-              type: prop.type,
+          ({ propName, type }) =>
+            `(${
+              isMaybeUndefined(type) ? `` : `'${propName}' in ${argName()} && `
+            }(${generateCheckFn({
+              type,
               parentArgCount: argCount,
-            })})(${argName()}['${prop.propName}']))`
+            })})(${argName()}['${propName}']))`
         )
         .join(" && ")}`
     } else if (type.__type === "TypeParameterTO") {
