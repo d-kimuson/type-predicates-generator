@@ -170,7 +170,7 @@ export function generateTypePredicates(
       asserts
         ? `
     export function assertIs${typeName}(value: unknown): asserts value is ${typeName} {
-      if (!is${typeName}(value)) throw TypeError(\`value must be ${typeName} but received \${value}\`)
+      if (!is${typeName}(value)) throw new TypeError(\`value must be ${typeName} but received \${value}\`)
     }
     `
         : ""
