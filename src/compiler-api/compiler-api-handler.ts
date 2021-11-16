@@ -100,6 +100,7 @@ export class CompilerApiHandler {
                       : this.#convertType(type)
                     : {
                         __type: "UnknownTO",
+                        kind: "prop",
                       },
               }
             }
@@ -279,7 +280,7 @@ export class CompilerApiHandler {
             const resultT = this.#extractArrayT(type)
             return isOk(resultT)
               ? resultT.ok
-              : ({ __type: "UnknownTO" } as const)
+              : ({ __type: "UnknownTO", kind: "arrayT" } as const)
           })(),
         }
       )
@@ -289,6 +290,8 @@ export class CompilerApiHandler {
       )
       .default<to.UnknownTO>({
         __type: "UnknownTO",
+        kind: "convert",
+        typeText: this.#typeToString(type),
       })
   }
 

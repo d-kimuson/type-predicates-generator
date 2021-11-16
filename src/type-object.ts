@@ -62,6 +62,8 @@ export type SkipTO = {
 // 分岐を抜けた未知の型
 export type UnknownTO = {
   __type: "UnknownTO"
+  kind: "arrayT" | "prop" | "convert"
+  typeText?: string
 }
 
 export function primitive(kind: PrimitiveTO["kind"]): PrimitiveTO {

@@ -89,7 +89,10 @@ const generateAndWriteCodes = (
   const types = files.map((filePath) => {
     const result = handler.extractTypes(filePath)
     const importPath =
-      "./" + relative(resolve(output, ".."), filePath).replace(".ts", "")
+      "./" +
+      relative(resolve(output, ".."), filePath)
+        .replace(".ts", "")
+        .replace(".d.ts", "")
 
     if (isNg(result)) {
       throw Error(`Fail to extract types from ${filePath}`)
