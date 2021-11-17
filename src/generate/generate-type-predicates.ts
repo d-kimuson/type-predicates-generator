@@ -176,9 +176,9 @@ export function generateTypePredicates(
     }
 
     console.warn(
-      `type check${
-        typeName ? ` for ${typeName} ` : " "
-      }will be skipped because not supported. `
+      `An unsupported or unknown type was detected. The generated function will skip the check (TypeName: ${
+        typeName ?? "unknown"
+      })`
     )
     return `/* WARN: Not Supported Type */ (value: unknown)${
       typeof typeName === "string" ? `:value is ${typeName}` : ""
