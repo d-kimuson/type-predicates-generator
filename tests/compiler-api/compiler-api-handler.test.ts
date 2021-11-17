@@ -3,13 +3,15 @@ import { CompilerApiHandler } from "~/compiler-api/compiler-api-handler"
 import { createProgram } from "~/compiler-api/program"
 import { isOk } from "~/utils"
 
-const program = createProgram(resolve(__dirname, "../example/tsconfig.json"))
+const absolutePath = (path: string) => resolve(__dirname, "../../example", path)
+
+const program = createProgram(absolutePath("./tsconfig.json"))
 const handler = new CompilerApiHandler(program)
 
 describe("convertType", () => {
   it("primitive", () => {
     const typesResult = handler.extractTypes(
-      resolve(__dirname, "../example/types/primitive.ts")
+      absolutePath("./types/primitive.ts")
     )
     expect(isOk(typesResult)).toBe(true)
     if (!isOk(typesResult)) {
@@ -31,9 +33,7 @@ describe("convertType", () => {
   })
 
   it("special", () => {
-    const typesResult = handler.extractTypes(
-      resolve(__dirname, "../example/types/special.ts")
-    )
+    const typesResult = handler.extractTypes(absolutePath("./types/special.ts"))
     expect(isOk(typesResult)).toBe(true)
     if (!isOk(typesResult)) {
       return
@@ -54,9 +54,7 @@ describe("convertType", () => {
   })
 
   it("literal", () => {
-    const typesResult = handler.extractTypes(
-      resolve(__dirname, "../example/types/literal.ts")
-    )
+    const typesResult = handler.extractTypes(absolutePath("./types/literal.ts"))
     expect(isOk(typesResult)).toBe(true)
     if (!isOk(typesResult)) {
       return
@@ -82,9 +80,7 @@ describe("convertType", () => {
   })
 
   it("union", () => {
-    const typesResult = handler.extractTypes(
-      resolve(__dirname, "../example/types/union.ts")
-    )
+    const typesResult = handler.extractTypes(absolutePath("./types/union.ts"))
     expect(isOk(typesResult)).toBe(true)
     if (!isOk(typesResult)) {
       return
@@ -110,9 +106,7 @@ describe("convertType", () => {
   })
 
   it("array", () => {
-    const typesResult = handler.extractTypes(
-      resolve(__dirname, "../example/types/array.ts")
-    )
+    const typesResult = handler.extractTypes(absolutePath("./types/array.ts"))
     expect(isOk(typesResult)).toBe(true)
     if (isOk(typesResult)) {
       const types = typesResult.ok
@@ -139,9 +133,7 @@ describe("convertType", () => {
   })
 
   it("object", () => {
-    const typesResult = handler.extractTypes(
-      resolve(__dirname, "../example/types/object.ts")
-    )
+    const typesResult = handler.extractTypes(absolutePath("./types/object.ts"))
     expect(isOk(typesResult)).toBe(true)
     if (!isOk(typesResult)) {
       return
@@ -226,7 +218,7 @@ describe("convertType", () => {
 
   it("generics", () => {
     const typesResult = handler.extractTypes(
-      resolve(__dirname, "../example/types/generics.ts")
+      absolutePath("./types/generics.ts")
     )
     expect(isOk(typesResult)).toBe(true)
     if (isOk(typesResult)) {
@@ -283,7 +275,7 @@ describe("convertType", () => {
 
   it("object", () => {
     const typesResult = handler.extractTypes(
-      resolve(__dirname, "../example/types/re-export.ts")
+      absolutePath("./types/re-export.ts")
     )
     expect(isOk(typesResult)).toBe(true)
     if (!isOk(typesResult)) {

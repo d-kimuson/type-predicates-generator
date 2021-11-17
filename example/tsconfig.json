@@ -7,6 +7,6 @@
     "moduleResolution": "node",
     "esModuleInterop": true
   },
-  "files": ["src.ts", "target.ts"],
+  "files": ["src.ts"],
   "include": ["types"]
 }
