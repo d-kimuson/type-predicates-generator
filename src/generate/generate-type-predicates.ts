@@ -188,12 +188,33 @@ export function generateTypePredicates(
     }`
   }
 
+  const generatedTypeNames: string[] = []
+  const skipImports: {
+    typeName: string
+    importPath: string
+  }[] = []
+
   const checkFns = files
-    .flatMap((file) => file.types)
-    // Do not generate predicates for top-level unknown type
-    .filter((file) => file.type.__type !== "UnknownTO")
-    .map(
-      ({ type, typeName }) => `export const is${typeName} = ${generateCheckFn({
+    .flatMap((file) =>
+      file.types.map((type) => ({ ...type, importPath: file.importPath }))
+    )
+    .map(({ type, typeName, importPath }) => {
+      if (
+        // Do not generate predicates for top-level unknown type
+        generatedTypeNames.includes(typeName) ||
+        // Prevent re-generate predicates
+        type.__type === "UnknownTO"
+      ) {
+        skipImports.push({
+          typeName,
+          importPath,
+        })
+        return ``
+      }
+
+      generatedTypeNames.push(typeName)
+
+      return `export const is${typeName} = ${generateCheckFn({
         type,
         typeName,
         parentArgCount: -1,
@@ -205,7 +226,7 @@ export function generateTypePredicates(
     };`
         : ""
     }`
-    )
+    })
 
   const corePredicates = uniq(
     [
@@ -217,10 +238,24 @@ export function generateTypePredicates(
 
   return dedent(`
     ${files
-      .filter(({ types }) => types.length !== 0)
+      .filter(
+        ({ types, importPath }) =>
+          types.length -
+            skipImports.filter(
+              ({ importPath: skipImportPath }) => skipImportPath === importPath
+            ).length !==
+          0
+      )
       .map(
         ({ importPath, types }) =>
           `import type { ${types
+            .filter(
+              ({ typeName }) =>
+                !skipImports.find(
+                  ({ typeName: skipTypeName, importPath: skipImportPath }) =>
+                    skipTypeName === typeName && skipImportPath === importPath
+                )
+            )
             .map(({ typeName }) => typeName)
             .join(", ")} } from '${importPath}'`
       )

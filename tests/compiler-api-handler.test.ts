@@ -280,4 +280,69 @@ describe("convertType", () => {
       ])
     }
   })
+
+  it("object", () => {
+    const typesResult = handler.extractTypes(
+      resolve(__dirname, "../example/types/re-export.ts")
+    )
+    expect(isOk(typesResult)).toBe(true)
+    if (!isOk(typesResult)) {
+      return
+    }
+
+    const types = typesResult.ok
+    expect(types.length).toStrictEqual(1)
+
+    const [type1, type2] = types
+    expect(type1?.type.__type).toStrictEqual("ObjectTO")
+    if (type1?.type.__type !== "ObjectTO") {
+      return
+    }
+
+    expect(type2).not.toBeDefined()
+    expect(type1.type.getProps()).toStrictEqual([
+      {
+        propName: "name",
+        type: {
+          __type: "PrimitiveTO",
+          kind: "string",
+        },
+      },
+      {
+        propName: "names",
+        type: {
+          __type: "ArrayTO",
+          typeName: "string[]",
+          child: {
+            __type: "PrimitiveTO",
+            kind: "string",
+          },
+        },
+      },
+      {
+        propName: "maybeName",
+        type: {
+          typeName: "string | undefined",
+          __type: "UnionTO",
+          unions: [
+            {
+              __type: "SpecialTO",
+              kind: "undefined",
+            },
+            {
+              __type: "PrimitiveTO",
+              kind: "string",
+            },
+          ],
+        },
+      },
+      {
+        propName: "time",
+        type: {
+          __type: "SpecialTO",
+          kind: "Date",
+        },
+      },
+    ])
+  })
 })

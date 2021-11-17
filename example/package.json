@@ -7,7 +7,8 @@
     "typecheck": "tsc -p . --noEmit",
     "codegen:tpg": "type-predicates-generator -a -f 'types/*.ts' --strict-array-check",
     "watch:tpg": "yarn codegen:tpg -w",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "type-predicates-generator": "../"

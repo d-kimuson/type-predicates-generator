@@ -2,6 +2,7 @@ import * as ts from "typescript"
 import { forEachChild, unescapeLeadingUnderscores } from "typescript"
 import type * as to from "../type-object"
 import type { Result } from "~/utils"
+import { isNg } from "~/utils"
 import { ok, ng, switchExpression, isOk } from "~/utils"
 import { primitive, special, skip } from "../type-object"
 
@@ -14,11 +15,19 @@ export class CompilerApiHandler {
     this.#typeChecker = this.#program.getTypeChecker()
   }
 
-  public extractTypes(
-    filePath: string
-  ): Result<
+  public extractTypes(filePath: string): Result<
     { typeName: string | undefined; type: to.TypeObject }[],
-    { reason: "fileNotFound" }
+    | { reason: "fileNotFound" }
+    | {
+        reason: "exportError"
+        meta:
+          | "fileNotFound"
+          | "resolvedModulesNotFound"
+          | "moduleNotFound"
+          | "moduleFileNotFound"
+          | "notNamedExport"
+          | "unknown"
+      }
   > {
     const sourceFile = this.#program.getSourceFile(filePath)
 
@@ -30,11 +39,18 @@ export class CompilerApiHandler {
 
     const nodes = this.#extractNodes(sourceFile)
       .filter(
-        (node): node is ts.TypeAliasDeclaration | ts.InterfaceDeclaration =>
-          ts.isInterfaceDeclaration(node) || ts.isTypeAliasDeclaration(node)
+        (
+          node
+        ): node is
+          | ts.TypeAliasDeclaration
+          | ts.InterfaceDeclaration
+          | ts.ExportDeclaration =>
+          ts.isExportDeclaration(node) ||
+          ((ts.isInterfaceDeclaration(node) ||
+            ts.isTypeAliasDeclaration(node)) &&
+            // @ts-expect-error exclude not exported type def
+            typeof node?.localSymbol !== "undefined")
       )
-      // @ts-expect-error exclude not exported type def
-      .filter((node) => typeof node?.localSymbol !== "undefined")
       .filter((node) =>
         this.#isTypeParametersResolved(
           this.#typeChecker.getTypeAtLocation(node)
@@ -42,15 +58,116 @@ export class CompilerApiHandler {
       )
 
     return ok(
-      nodes.map((node) => ({
-        typeName:
-          typeof node?.symbol?.escapedName !== "undefined"
-            ? String(node?.symbol?.escapedName)
-            : undefined,
-        type: this.#convertType(this.#typeChecker.getTypeAtLocation(node)),
-      }))
-      // .filter(({ type }) => !this.#hasTypeParameter(type))
+      nodes
+        .flatMap((node) => {
+          // export {} from 'path'
+          if (ts.isExportDeclaration(node)) {
+            const nodes = this.#extractTypesFromExportDeclaration(node)
+            if (isOk(nodes)) {
+              return nodes.ok
+            } else {
+              return ng({
+                reason: "exportError" as const,
+                meta: nodes.ng.reason,
+              })
+            }
+          }
+
+          // export declaration
+          return {
+            typeName:
+              typeof node?.symbol?.escapedName !== "undefined"
+                ? String(node?.symbol?.escapedName)
+                : undefined,
+            type: this.#convertType(this.#typeChecker.getTypeAtLocation(node)),
+          }
+        })
+        .filter(
+          (
+            result
+          ): result is {
+            typeName: string | undefined
+            type: to.TypeObject
+          } => {
+            if ("__type" in result && isNg(result)) {
+              console.log(`Skip reason: ${result.ng.meta}`)
+              return false
+            }
+
+            return true
+          }
+        )
     )
+  }
+
+  // Only support named-export
+  #extractTypesFromExportDeclaration(declare: ts.ExportDeclaration): Result<
+    { typeName: string | undefined; type: to.TypeObject }[],
+    {
+      reason:
+        | "fileNotFound"
+        | "resolvedModulesNotFound"
+        | "moduleNotFound"
+        | "moduleFileNotFound"
+        | "notNamedExport"
+        | "unknown"
+    }
+  > {
+    const path = declare.moduleSpecifier?.getText()
+    if (!path)
+      return ng({
+        reason: "fileNotFound",
+      })
+
+    const sourceFile = declare.getSourceFile()
+    const moduleMap =
+      // @ts-expect-error: type def wrong
+      sourceFile.resolvedModules as
+        | ts.UnderscoreEscapedMap<ts.ResolvedModule>
+        | undefined
+
+    if (!moduleMap)
+      return ng({
+        reason: "resolvedModulesNotFound",
+      })
+
+    const module = moduleMap.get(
+      ts.escapeLeadingUnderscores(path.replace(/'/g, "").replace(/"/g, ""))
+    )
+
+    if (!module)
+      return ng({
+        reason: "moduleNotFound",
+      })
+
+    const types = this.extractTypes(module.resolvedFileName)
+    if (isNg(types)) return ng({ reason: "moduleFileNotFound" })
+
+    const clause = declare.exportClause
+    if (!clause)
+      return ng({
+        reason: "unknown",
+      })
+
+    if (ts.isNamedExports(clause)) {
+      return ok(
+        clause.elements
+          .map(({ symbol }) => symbol?.getEscapedName())
+          .filter((str): str is ts.__String => typeof str !== "undefined")
+          .map((str) => ts.unescapeLeadingUnderscores(str))
+          .map(
+            (key) =>
+              types.ok.find(({ typeName }) => typeName === key) ?? {
+                typeName: key,
+                type: skip(),
+              }
+          )
+      )
+    }
+
+    return ng({
+      reason: "notNamedExport",
+    })
   }
 
   #extractNodes(sourceFile: ts.SourceFile): ts.Node[] {

@@ -1,0 +1,1 @@
+export { Obj } from "./object"
