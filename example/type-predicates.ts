@@ -22,6 +22,10 @@ const isArray = <T>(childCheckFn: ((value: unknown) => value is T) | ((value: un
     array.reduce((s: boolean, t: unknown) => s && childCheckFn(t), true);
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
+const isUnion = (unionChecks: ((value: unknown) => boolean)[]) =>
+  (value: unknown): boolean =>
+    Array.isArray(value) &&
+    unionChecks.reduce((s: boolean, isT) => s || isT(value), false)
 
 export const isArrStr = (arg_0: unknown): arg_0 is ArrStr => isArray(isString)(arg_0);
 export function assertIsArrStr(value: unknown): asserts value is ArrStr {
@@ -37,7 +41,7 @@ export function assertIsArrInProp(value: unknown): asserts value is ArrInProp {
   if (!isArrInProp(value)) throw new TypeError(`value must be ArrInProp but received ${value}`)
 };
 export const isComplex = (arg_0: unknown): arg_0 is Complex => isObject(arg_0) &&
-  (((arg_1: unknown): boolean => (isUndefined)(arg_1) || (isString)(arg_1))(arg_0['name'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || (isString)(arg_1))(arg_0['password']));
+  (((arg_1: unknown): boolean => isUnion([isUndefined, isString])(arg_1))(arg_0['name'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, isString])(arg_1))(arg_0['password']));
 export function assertIsComplex(value: unknown): asserts value is Complex {
   if (!isComplex(value)) throw new TypeError(`value must be Complex but received ${value}`)
 };
@@ -47,7 +51,7 @@ export function assertIsUser(value: unknown): asserts value is User {
   if (!isUser(value)) throw new TypeError(`value must be User but received ${value}`)
 };
 export const isResultOfGenerics = (arg_0: unknown): arg_0 is ResultOfGenerics => isObject(arg_0) &&
-  (((arg_1: unknown): boolean => (isUndefined)(arg_1) || (isNumber)(arg_1))(arg_0['id'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || (isDate)(arg_1))(arg_0['time']));
+  (((arg_1: unknown): boolean => isUnion([isUndefined, isNumber])(arg_1))(arg_0['id'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, isDate])(arg_1))(arg_0['time']));
 export function assertIsResultOfGenerics(value: unknown): asserts value is ResultOfGenerics {
   if (!isResultOfGenerics(value)) throw new TypeError(`value must be ResultOfGenerics but received ${value}`)
 };
@@ -64,7 +68,7 @@ export function assertIsTrue(value: unknown): asserts value is True {
   if (!isTrue(value)) throw new TypeError(`value must be True but received ${value}`)
 };
 export const isObj = (arg_0: unknown): arg_0 is Obj => isObject(arg_0) &&
-  ('name' in arg_0 && (isString)(arg_0['name'])) && ('names' in arg_0 && ((arg_1: unknown): boolean => isArray(isString)(arg_1))(arg_0['names'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || (isString)(arg_1))(arg_0['maybeName'])) && ('time' in arg_0 && (isDate)(arg_0['time']));
+  ('name' in arg_0 && (isString)(arg_0['name'])) && ('names' in arg_0 && ((arg_1: unknown): boolean => isArray(isString)(arg_1))(arg_0['names'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, isString])(arg_1))(arg_0['maybeName'])) && ('time' in arg_0 && (isDate)(arg_0['time']));
 export function assertIsObj(value: unknown): asserts value is Obj {
   if (!isObj(value)) throw new TypeError(`value must be Obj but received ${value}`)
 };
@@ -83,27 +87,27 @@ export function assertIsNum(value: unknown): asserts value is Num {
 };
 
 export const isCategory = (arg_0: unknown): arg_0 is Category => isObject(arg_0) &&
-  (((arg_1: unknown): boolean => (isUndefined)(arg_1) || (isNumber)(arg_1))(arg_0['id'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || (isString)(arg_1))(arg_0['name']));
+  (((arg_1: unknown): boolean => isUnion([isUndefined, isNumber])(arg_1))(arg_0['id'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, isString])(arg_1))(arg_0['name']));
 export function assertIsCategory(value: unknown): asserts value is Category {
   if (!isCategory(value)) throw new TypeError(`value must be Category but received ${value}`)
 };
 export const isOrder = (arg_0: unknown): arg_0 is Order => isObject(arg_0) &&
-  (((arg_1: unknown): boolean => (isUndefined)(arg_1) || (isNumber)(arg_1))(arg_0['id'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || (isNumber)(arg_1))(arg_0['petId'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || (isNumber)(arg_1))(arg_0['quantity'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || (isString)(arg_1))(arg_0['shipDate'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || ((arg_2: unknown): boolean => arg_2 === "placed")(arg_1) || ((arg_2: unknown): boolean => arg_2 === "approved")(arg_1) || ((arg_2: unknown): boolean => arg_2 === "delivered")(arg_1))(arg_0['status'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || ((arg_2: unknown): boolean => arg_2 === false)(arg_1) || ((arg_2: unknown): boolean => arg_2 === true)(arg_1))(arg_0['complete']));
+  (((arg_1: unknown): boolean => isUnion([isUndefined, isNumber])(arg_1))(arg_0['id'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, isNumber])(arg_1))(arg_0['petId'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, isNumber])(arg_1))(arg_0['quantity'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, isString])(arg_1))(arg_0['shipDate'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, (arg_2: unknown): boolean => arg_2 === "placed", (arg_2: unknown): boolean => arg_2 === "approved", (arg_2: unknown): boolean => arg_2 === "delivered"])(arg_1))(arg_0['status'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, (arg_2: unknown): boolean => arg_2 === false, (arg_2: unknown): boolean => arg_2 === true])(arg_1))(arg_0['complete']));
 export function assertIsOrder(value: unknown): asserts value is Order {
   if (!isOrder(value)) throw new TypeError(`value must be Order but received ${value}`)
 };
 export const isPet = (arg_0: unknown): arg_0 is Pet => isObject(arg_0) &&
-  (((arg_1: unknown): boolean => (isUndefined)(arg_1) || (isNumber)(arg_1))(arg_0['id'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || ((arg_2: unknown): boolean => isObject(arg_2) &&
-  (((arg_3: unknown): boolean => (isUndefined)(arg_3) || (isString)(arg_3))(arg_2['name'])) && (((arg_3: unknown): boolean => (isUndefined)(arg_3) || (isNumber)(arg_3))(arg_2['id'])))(arg_1))(arg_0['category'])) && ('name' in arg_0 && (isString)(arg_0['name'])) && ('photoUrls' in arg_0 && ((arg_1: unknown): boolean => isArray(isString)(arg_1))(arg_0['photoUrls'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || ((arg_2: unknown): boolean => isArray(isTag)(arg_2))(arg_1))(arg_0['tags'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || ((arg_2: unknown): boolean => arg_2 === "available")(arg_1) || ((arg_2: unknown): boolean => arg_2 === "pending")(arg_1) || ((arg_2: unknown): boolean => arg_2 === "sold")(arg_1))(arg_0['status']));
+  (((arg_1: unknown): boolean => isUnion([isUndefined, isNumber])(arg_1))(arg_0['id'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, (arg_2: unknown): boolean => isObject(arg_2) &&
+  (((arg_3: unknown): boolean => isUnion([isUndefined, isString])(arg_3))(arg_2['name'])) && (((arg_3: unknown): boolean => isUnion([isUndefined, isNumber])(arg_3))(arg_2['id']))])(arg_1))(arg_0['category'])) && ('name' in arg_0 && (isString)(arg_0['name'])) && ('photoUrls' in arg_0 && ((arg_1: unknown): boolean => isArray(isString)(arg_1))(arg_0['photoUrls'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, (arg_2: unknown): boolean => isArray(isTag)(arg_2)])(arg_1))(arg_0['tags'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, (arg_2: unknown): boolean => arg_2 === "available", (arg_2: unknown): boolean => arg_2 === "pending", (arg_2: unknown): boolean => arg_2 === "sold"])(arg_1))(arg_0['status']));
 export function assertIsPet(value: unknown): asserts value is Pet {
   if (!isPet(value)) throw new TypeError(`value must be Pet but received ${value}`)
 };
 export const isTag = (arg_0: unknown): arg_0 is Tag => isObject(arg_0) &&
-  (((arg_1: unknown): boolean => (isUndefined)(arg_1) || (isNumber)(arg_1))(arg_0['id'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || (isString)(arg_1))(arg_0['name']));
+  (((arg_1: unknown): boolean => isUnion([isUndefined, isNumber])(arg_1))(arg_0['id'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, isString])(arg_1))(arg_0['name']));
 export function assertIsTag(value: unknown): asserts value is Tag {
   if (!isTag(value)) throw new TypeError(`value must be Tag but received ${value}`)
 };
-export const isPetStatusEnum = (arg_0: unknown): arg_0 is PetStatusEnum => ((arg_1: unknown): boolean => arg_1 === "available")(arg_0) || ((arg_1: unknown): boolean => arg_1 === "pending")(arg_0) || ((arg_1: unknown): boolean => arg_1 === "sold")(arg_0);
+export const isPetStatusEnum = (arg_0: unknown): arg_0 is PetStatusEnum => isUnion([(arg_1: unknown): boolean => arg_1 === "available", (arg_1: unknown): boolean => arg_1 === "pending", (arg_1: unknown): boolean => arg_1 === "sold"])(arg_0);
 export function assertIsPetStatusEnum(value: unknown): asserts value is PetStatusEnum {
   if (!isPetStatusEnum(value)) throw new TypeError(`value must be PetStatusEnum but received ${value}`)
 };
@@ -119,15 +123,15 @@ export const isTupleStr = (arg_0: unknown): arg_0 is TupleStr => Array.isArray(a
 export function assertIsTupleStr(value: unknown): asserts value is TupleStr {
   if (!isTupleStr(value)) throw new TypeError(`value must be TupleStr but received ${value}`)
 };
-export const isStrOrNumber = (arg_0: unknown): arg_0 is StrOrNumber => (isString)(arg_0) || (isNumber)(arg_0);
+export const isStrOrNumber = (arg_0: unknown): arg_0 is StrOrNumber => isUnion([isString, isNumber])(arg_0);
 export function assertIsStrOrNumber(value: unknown): asserts value is StrOrNumber {
   if (!isStrOrNumber(value)) throw new TypeError(`value must be StrOrNumber but received ${value}`)
 };
-export const isBasicEnum = (arg_0: unknown): arg_0 is BasicEnum => ((arg_1: unknown): boolean => arg_1 === 0)(arg_0) || ((arg_1: unknown): boolean => arg_1 === 1)(arg_0) || ((arg_1: unknown): boolean => arg_1 === 2)(arg_0);
+export const isBasicEnum = (arg_0: unknown): arg_0 is BasicEnum => isUnion([(arg_1: unknown): boolean => arg_1 === 0, (arg_1: unknown): boolean => arg_1 === 1, (arg_1: unknown): boolean => arg_1 === 2])(arg_0);
 export function assertIsBasicEnum(value: unknown): asserts value is BasicEnum {
   if (!isBasicEnum(value)) throw new TypeError(`value must be BasicEnum but received ${value}`)
 };
-export const isEnumWithValue = (arg_0: unknown): arg_0 is EnumWithValue => ((arg_1: unknown): boolean => arg_1 === "red")(arg_0) || ((arg_1: unknown): boolean => arg_1 === "blue")(arg_0) || ((arg_1: unknown): boolean => arg_1 === "green")(arg_0);
+export const isEnumWithValue = (arg_0: unknown): arg_0 is EnumWithValue => isUnion([(arg_1: unknown): boolean => arg_1 === "red", (arg_1: unknown): boolean => arg_1 === "blue", (arg_1: unknown): boolean => arg_1 === "green"])(arg_0);
 export function assertIsEnumWithValue(value: unknown): asserts value is EnumWithValue {
   if (!isEnumWithValue(value)) throw new TypeError(`value must be EnumWithValue but received ${value}`)
 };

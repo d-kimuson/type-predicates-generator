@@ -55,6 +55,10 @@ const utilTypePredicateMap = {
       (array: unknown): boolean =>
         Array.isArray(array) &&
         array.reduce((s: boolean, t: unknown) => s && childCheckFn(t), true);`,
+  union: `const isUnion = (unionChecks: ((value: unknown) => boolean)[]) =>
+      (value: unknown): boolean =>
+        Array.isArray(value) &&
+        unionChecks.reduce((s: boolean, isT) => s || isT(value), false)`,
 }
 
 function isPossibleUseTypeName(
@@ -129,15 +133,12 @@ export function generateTypePredicates(
         typeof type.value === "string" ? '"' + type.value + '"' : type.value
       }`
     } else if (type.__type === "UnionTO") {
-      return `${generateDeclare(argName(), typeName)}${type.unions
-        .map(
-          (unionType) =>
-            `(${generateCheckFn({
-              type: unionType,
-              parentArgCount: argCount,
-            })})(${argName()})`
+      usedUtils.push("union")
+      return `${generateDeclare(argName(), typeName)}isUnion([${type.unions
+        .map((unionType) =>
+          generateCheckFn({ type: unionType, parentArgCount: argCount })
         )
-        .join(" || ")}`
+        .join(", ")}])(${argName()})`
     } else if (type.__type === "ArrayTO") {
       usedUtils.push(strictArrayCheck ? "strictArray" : "array")
       const checkChildFn = generateCheckFn({
