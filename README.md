@@ -7,9 +7,17 @@ $ npx type-predicates-generator -o predicates.ts
 $ npx type-predicates-generator -w -o predicates.ts # watch mode
 ```
 
-## Options
+## Cli Options
 
-FIXME
+| Option               | Default              | Description                                                               |
+| -------------------- | -------------------- | ------------------------------------------------------------------------- |
+| -p, --project        | `tsconfig.json`      | Path for project `tsconfig.json`                                          |
+| -f, --file-glob      | `**/*.ts`            | file glob pattern target types                                            |
+| -o, --output         | `type-predicates.ts` | file glob pattern that original types are defined for generated.          |
+| -b, --base-path      | `./`                 | project base path                                                         |
+| -a, --asserts        | `false`              | generate assert functions or not                                          |
+| -w, --watch          | `false`              | watch or not                                                              |
+| --strict-array-check | `false`              | check all elements (or only first element) if they match the element type |
 
 ## Contributing
 
