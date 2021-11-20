@@ -114,6 +114,7 @@ export const isPetStatusEnum = (arg_0: unknown): arg_0 is PetStatusEnum => isUni
 export function assertIsPetStatusEnum(value: unknown): asserts value is PetStatusEnum {
   if (!isPetStatusEnum(value)) throw new TypeError(`value must be PetStatusEnum but received ${value}`)
 };
+
 export const isUndef = isUndefined;
 export function assertIsUndef(value: unknown): asserts value is Undef {
   if (!isUndef(value)) throw new TypeError(`value must be Undef but received ${value}`)

@@ -19,6 +19,23 @@ const specialTypePredicateNameMap = {
   Date: "isDate",
 }
 
+const reservedNames = [
+  "String",
+  "Number",
+  "Bigint",
+  "Boolean",
+  "Null",
+  "Undefined",
+  "Any",
+  "Unknown",
+  "Never",
+  "Void",
+  "Date",
+  "Object",
+  "Array",
+  "Union",
+]
+
 const primitiveTypePredicateMap = {
   string:
     "const isString = (value: unknown): value is string => typeof value === 'string';",
@@ -209,6 +226,15 @@ export function generateTypePredicates(
       file.types.map((type) => ({ ...type, importPath: file.importPath }))
     )
     .map(({ type, typeName, importPath }) => {
+      if (reservedNames.includes(typeName)) {
+        console.log(`is${typeName} is reserved word, so skip generation.`)
+        skipImports.push({
+          typeName,
+          importPath,
+        })
+        return ``
+      }
+
       if (
         // Do not generate predicates for top-level unknown type
         generatedTypeNames.includes(typeName) ||
