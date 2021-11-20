@@ -396,4 +396,57 @@ describe("convertType", () => {
       },
     ])
   })
+
+  it("complex types", () => {
+    const typesResult = handler.extractTypes(absolutePath("./types/complex.ts"))
+    expect(isOk(typesResult)).toBe(true)
+    if (!isOk(typesResult)) {
+      return
+    }
+
+    const types = typesResult.ok
+    expect(types.length).toStrictEqual(1)
+    const [type0] = types
+    if (typeof type0 === "undefined") return
+
+    expect(type0.type.__type).toBe("ObjectTO")
+    if (type0.type.__type !== "ObjectTO") return
+
+    expect(type0.type.getProps()).toStrictEqual([
+      {
+        propName: "name",
+        type: {
+          __type: "UnionTO",
+          typeName: "string | undefined",
+          unions: [
+            {
+              __type: "SpecialTO",
+              kind: "undefined",
+            },
+            {
+              __type: "PrimitiveTO",
+              kind: "string",
+            },
+          ],
+        },
+      },
+      {
+        propName: "password",
+        type: {
+          __type: "UnionTO",
+          typeName: "string | undefined",
+          unions: [
+            {
+              __type: "SpecialTO",
+              kind: "undefined",
+            },
+            {
+              __type: "PrimitiveTO",
+              kind: "string",
+            },
+          ],
+        },
+      },
+    ])
+  })
 })

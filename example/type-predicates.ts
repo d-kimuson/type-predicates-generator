@@ -1,4 +1,5 @@
 import type { ArrStr, ArrStr2, ArrInProp } from './types/array';
+import type { Complex } from './types/complex';
 import type { User } from './types/entity';
 import type { ResultOfGenerics } from './types/generics';
 import type { Hello, Age, True } from './types/literal';
@@ -33,6 +34,11 @@ export const isArrInProp = (arg_0: unknown): arg_0 is ArrInProp => isObject(arg_
   arg_1.reduce((s: boolean, t: unknown) => s && (isString)(t) , true))(arg_0['arr']));
 export function assertIsArrInProp(value: unknown): asserts value is ArrInProp {
   if (!isArrInProp(value)) throw new TypeError(`value must be ArrInProp but received ${value}`)
+};
+export const isComplex = (arg_0: unknown): arg_0 is Complex => isObject(arg_0) &&
+  (((arg_1: unknown): boolean => (isUndefined)(arg_1) || (isString)(arg_1))(arg_0['name'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || (isString)(arg_1))(arg_0['password']));
+export function assertIsComplex(value: unknown): asserts value is Complex {
+  if (!isComplex(value)) throw new TypeError(`value must be Complex but received ${value}`)
 };
 export const isUser = (arg_0: unknown): arg_0 is User => isObject(arg_0) &&
   ('id' in arg_0 && (isNumber)(arg_0['id'])) && ('firstName' in arg_0 && (isString)(arg_0['firstName'])) && ('lastName' in arg_0 && (isString)(arg_0['lastName']));
@@ -88,7 +94,7 @@ export function assertIsOrder(value: unknown): asserts value is Order {
 };
 export const isPet = (arg_0: unknown): arg_0 is Pet => isObject(arg_0) &&
   (((arg_1: unknown): boolean => (isUndefined)(arg_1) || (isNumber)(arg_1))(arg_0['id'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || ((arg_2: unknown): boolean => isObject(arg_2) &&
-  (((arg_3: unknown): boolean => (isUndefined)(arg_3) || (isNumber)(arg_3))(arg_2['id'])) && (((arg_3: unknown): boolean => (isUndefined)(arg_3) || (isString)(arg_3))(arg_2['name'])))(arg_1))(arg_0['category'])) && ('name' in arg_0 && (isString)(arg_0['name'])) && ('photoUrls' in arg_0 && ((arg_1: unknown): boolean => Array.isArray(arg_1) &&
+  (((arg_3: unknown): boolean => (isUndefined)(arg_3) || (isString)(arg_3))(arg_2['name'])) && (((arg_3: unknown): boolean => (isUndefined)(arg_3) || (isNumber)(arg_3))(arg_2['id'])))(arg_1))(arg_0['category'])) && ('name' in arg_0 && (isString)(arg_0['name'])) && ('photoUrls' in arg_0 && ((arg_1: unknown): boolean => Array.isArray(arg_1) &&
   arg_1.reduce((s: boolean, t: unknown) => s && (isString)(t) , true))(arg_0['photoUrls'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || ((arg_2: unknown): boolean => Array.isArray(arg_2) &&
   arg_2.reduce((s: boolean, t: unknown) => s && (isTag)(t) , true))(arg_1))(arg_0['tags'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || ((arg_2: unknown): boolean => arg_2 === "available")(arg_1) || ((arg_2: unknown): boolean => arg_2 === "pending")(arg_1) || ((arg_2: unknown): boolean => arg_2 === "sold")(arg_1))(arg_0['status']));
 export function assertIsPet(value: unknown): asserts value is Pet {
