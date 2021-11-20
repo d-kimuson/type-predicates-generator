@@ -87,9 +87,15 @@ describe("convertType", () => {
     }
 
     const types = typesResult.ok
-    expect(types.length).toStrictEqual(1)
+    expect(types.length).toStrictEqual(3)
+    const [type0, type1, type2, type3] = types
+    expect(type0).toBeDefined()
+    expect(type1).toBeDefined()
+    expect(type2).toBeDefined()
+    expect(type3).not.toBeDefined()
+    if (!type0 || !type1 || !type2) return
 
-    expect(types[0]?.type).toStrictEqual({
+    expect(type0.type).toStrictEqual({
       __type: "UnionTO",
       typeName: "Union",
       unions: [
@@ -100,6 +106,44 @@ describe("convertType", () => {
         {
           __type: "PrimitiveTO",
           kind: "number",
+        },
+      ],
+    })
+
+    expect(type1.type).toStrictEqual({
+      __type: "UnionTO",
+      typeName: "BasicEnum",
+      unions: [
+        {
+          __type: "LiteralTO",
+          value: 0,
+        },
+        {
+          __type: "LiteralTO",
+          value: 1,
+        },
+        {
+          __type: "LiteralTO",
+          value: 2,
+        },
+      ],
+    })
+
+    expect(type2.type).toStrictEqual({
+      __type: "UnionTO",
+      typeName: "EnumWithValue",
+      unions: [
+        {
+          __type: "LiteralTO",
+          value: "red",
+        },
+        {
+          __type: "LiteralTO",
+          value: "blue",
+        },
+        {
+          __type: "LiteralTO",
+          value: "green",
         },
       ],
     })

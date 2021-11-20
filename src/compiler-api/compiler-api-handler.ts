@@ -44,8 +44,10 @@ export class CompilerApiHandler {
         ): node is
           | ts.TypeAliasDeclaration
           | ts.InterfaceDeclaration
+          | ts.EnumDeclaration
           | ts.ExportDeclaration =>
           ts.isExportDeclaration(node) ||
+          ts.isEnumDeclaration(node) ||
           ((ts.isInterfaceDeclaration(node) ||
             ts.isTypeAliasDeclaration(node)) &&
             // @ts-expect-error exclude not exported type def

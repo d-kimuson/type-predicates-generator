@@ -8,6 +8,7 @@ export type TypeObject =
   | TupleTO
   | ObjectTO
   | UnionTO
+  | EnumTO
   | TypeParameterTO
   | UnknownTO
   | SkipTO
@@ -55,9 +56,18 @@ export type UnionTO = TypeNameTrait & {
   unions: TypeObject[]
 }
 
+// Unresolved Type Parameter
 export type TypeParameterTO = {
   __type: "TypeParameterTO"
   name: string
+}
+
+export type EnumTO = TypeNameTrait & {
+  __type: "EnumTO"
+  enums: {
+    name: string
+    type: LiteralTO
+  }[]
 }
 
 // サポートしてない型(スキップする)

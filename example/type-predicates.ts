@@ -7,7 +7,7 @@ import type { Str, Num } from './types/primitive';
 import type { Category, Order, Pet, Tag, PetStatusEnum } from './types/re-export';
 import type { Undef, Null_ } from './types/special';
 import type { TupleStr } from './types/tuple';
-import type { Union } from './types/union';
+import type { Union, BasicEnum, EnumWithValue } from './types/union';
 
 const isString = (value: unknown): value is string => typeof value === 'string';
 const isNumber = (value: unknown): value is number => typeof value === 'number';
@@ -99,10 +99,7 @@ export const isTag = (arg_0: unknown): arg_0 is Tag => isObject(arg_0) &&
 export function assertIsTag(value: unknown): asserts value is Tag {
   if (!isTag(value)) throw new TypeError(`value must be Tag but received ${value}`)
 };
-export const isPetStatusEnum = /* WARN: Not Supported Type */ (value: unknown):value is PetStatusEnum => {
-  console.warn(`check was skipped bacause ${value} is not supported type.`);
-  return true;
-};
+export const isPetStatusEnum = (arg_0: unknown): arg_0 is PetStatusEnum => ((arg_1: unknown): boolean => arg_1 === "available")(arg_0) || ((arg_1: unknown): boolean => arg_1 === "pending")(arg_0) || ((arg_1: unknown): boolean => arg_1 === "sold")(arg_0);
 export function assertIsPetStatusEnum(value: unknown): asserts value is PetStatusEnum {
   if (!isPetStatusEnum(value)) throw new TypeError(`value must be PetStatusEnum but received ${value}`)
 };
@@ -121,4 +118,12 @@ export function assertIsTupleStr(value: unknown): asserts value is TupleStr {
 export const isUnion = (arg_0: unknown): arg_0 is Union => (isString)(arg_0) || (isNumber)(arg_0);
 export function assertIsUnion(value: unknown): asserts value is Union {
   if (!isUnion(value)) throw new TypeError(`value must be Union but received ${value}`)
+};
+export const isBasicEnum = (arg_0: unknown): arg_0 is BasicEnum => ((arg_1: unknown): boolean => arg_1 === 0)(arg_0) || ((arg_1: unknown): boolean => arg_1 === 1)(arg_0) || ((arg_1: unknown): boolean => arg_1 === 2)(arg_0);
+export function assertIsBasicEnum(value: unknown): asserts value is BasicEnum {
+  if (!isBasicEnum(value)) throw new TypeError(`value must be BasicEnum but received ${value}`)
+};
+export const isEnumWithValue = (arg_0: unknown): arg_0 is EnumWithValue => ((arg_1: unknown): boolean => arg_1 === "red")(arg_0) || ((arg_1: unknown): boolean => arg_1 === "blue")(arg_0) || ((arg_1: unknown): boolean => arg_1 === "green")(arg_0);
+export function assertIsEnumWithValue(value: unknown): asserts value is EnumWithValue {
+  if (!isEnumWithValue(value)) throw new TypeError(`value must be EnumWithValue but received ${value}`)
 };
