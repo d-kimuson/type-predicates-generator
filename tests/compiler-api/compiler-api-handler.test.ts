@@ -97,7 +97,7 @@ describe("convertType", () => {
 
     expect(type0.type).toStrictEqual({
       __type: "UnionTO",
-      typeName: "Union",
+      typeName: "StrOrNumber",
       unions: [
         {
           __type: "PrimitiveTO",

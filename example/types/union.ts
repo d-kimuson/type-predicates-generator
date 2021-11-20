@@ -1,4 +1,4 @@
-export type Union = string | number
+export type StrOrNumber = string | number
 export enum BasicEnum {
   Red,
   Blue,

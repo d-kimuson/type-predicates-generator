@@ -45,14 +45,14 @@ const specialTypePredicateMap = {
 const utilTypePredicateMap = {
   object: `const isObject = (value: unknown): value is Record<string, unknown> =>
       typeof value === 'object' && value !== null && !Array.isArray(value);`,
-  array: `const isArray = <T>(childCheckFn: (value: unknown) => value is T) =>
-      (array: unknown): array is T[] =>
+  array: `const isArray = <T>(childCheckFn: ((value: unknown) => value is T) | ((value: unknown) => boolean)) =>
+      (array: unknown): boolean =>
         Array.isArray(array) && (
           typeof array[0] === "undefined" ||
           childCheckFn(array[0])
         );`,
-  strictArray: `const isArray = <T>(childCheckFn: (value: unknown) => value is T) =>
-      (array: unknown): array is T[] =>
+  strictArray: `const isArray = <T>(childCheckFn: ((value: unknown) => value is T) | ((value: unknown) => boolean)) =>
+      (array: unknown): boolean =>
         Array.isArray(array) &&
         array.reduce((s: boolean, t: unknown) => s && childCheckFn(t), true);`,
 }

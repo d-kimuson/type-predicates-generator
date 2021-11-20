@@ -8,7 +8,7 @@ import type { Str, Num } from './types/primitive';
 import type { Category, Order, Pet, Tag, PetStatusEnum } from './types/re-export';
 import type { Undef, Null_ } from './types/special';
 import type { TupleStr } from './types/tuple';
-import type { Union, BasicEnum, EnumWithValue } from './types/union';
+import type { StrOrNumber, BasicEnum, EnumWithValue } from './types/union';
 
 const isString = (value: unknown): value is string => typeof value === 'string';
 const isNumber = (value: unknown): value is number => typeof value === 'number';
@@ -16,8 +16,8 @@ const isUndefined = (value: unknown): value is undefined => typeof value === 'un
 const isDate = (value: unknown): value is Date =>
   value instanceof Date || Object.prototype.toString.call(value) === '[Object Date]'
 const isNull = (value: unknown): value is null => value === null;
-const isArray = <T>(childCheckFn: (value: unknown) => value is T) =>
-  (array: unknown): array is T[] =>
+const isArray = <T>(childCheckFn: ((value: unknown) => value is T) | ((value: unknown) => boolean)) =>
+  (array: unknown): boolean =>
     Array.isArray(array) &&
     array.reduce((s: boolean, t: unknown) => s && childCheckFn(t), true);
 const isObject = (value: unknown): value is Record<string, unknown> =>
@@ -119,9 +119,9 @@ export const isTupleStr = (arg_0: unknown): arg_0 is TupleStr => Array.isArray(a
 export function assertIsTupleStr(value: unknown): asserts value is TupleStr {
   if (!isTupleStr(value)) throw new TypeError(`value must be TupleStr but received ${value}`)
 };
-export const isUnion = (arg_0: unknown): arg_0 is Union => (isString)(arg_0) || (isNumber)(arg_0);
-export function assertIsUnion(value: unknown): asserts value is Union {
-  if (!isUnion(value)) throw new TypeError(`value must be Union but received ${value}`)
+export const isStrOrNumber = (arg_0: unknown): arg_0 is StrOrNumber => (isString)(arg_0) || (isNumber)(arg_0);
+export function assertIsStrOrNumber(value: unknown): asserts value is StrOrNumber {
+  if (!isStrOrNumber(value)) throw new TypeError(`value must be StrOrNumber but received ${value}`)
 };
 export const isBasicEnum = (arg_0: unknown): arg_0 is BasicEnum => ((arg_1: unknown): boolean => arg_1 === 0)(arg_0) || ((arg_1: unknown): boolean => arg_1 === 1)(arg_0) || ((arg_1: unknown): boolean => arg_1 === 2)(arg_0);
 export function assertIsBasicEnum(value: unknown): asserts value is BasicEnum {

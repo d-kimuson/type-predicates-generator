@@ -5,7 +5,7 @@ import {
   isStr,
   isAge,
   isTrue,
-  isUnion,
+  isStrOrNumber,
   isArrStr,
   isObj,
 } from "../type-predicates"
@@ -43,13 +43,13 @@ describe("literal", () => {
 describe("union", () => {
   it("string literal", () => {
     // string | number
-    expect(isUnion("hello")).toBe(true)
-    expect(isUnion(20)).toBe(true)
+    expect(isStrOrNumber("hello")).toBe(true)
+    expect(isStrOrNumber(20)).toBe(true)
 
     // else
-    expect(isUnion(undefined)).toBe(false)
-    expect(isUnion(["hello"])).toBe(false)
-    expect(isUnion({ greet: "hello" })).toBe(false)
+    expect(isStrOrNumber(undefined)).toBe(false)
+    expect(isStrOrNumber(["hello"])).toBe(false)
+    expect(isStrOrNumber({ greet: "hello" })).toBe(false)
   })
 })
 
