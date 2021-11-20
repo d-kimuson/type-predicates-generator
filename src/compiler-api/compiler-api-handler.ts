@@ -238,6 +238,14 @@ export class CompilerApiHandler {
     to.TypeObject,
     { reason: "node_not_defined" | "not_array_type_node" | "cannot_resolve" }
   > {
+    const maybeArrayT = (type.resolvedTypeArguments ?? [])[0]
+    if (
+      type.symbol.getEscapedName() === "Array" &&
+      typeof maybeArrayT !== "undefined"
+    ) {
+      return ok(this.#convertType(maybeArrayT))
+    }
+
     const maybeNode = type?.node
     if (!maybeNode) {
       return ng({

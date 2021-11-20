@@ -110,7 +110,7 @@ describe("convertType", () => {
     expect(isOk(typesResult)).toBe(true)
     if (isOk(typesResult)) {
       const types = typesResult.ok
-      expect(types.length).toStrictEqual(2)
+      expect(types.length).toStrictEqual(3)
 
       expect(types[0]?.type).toStrictEqual({
         __type: "ArrayTO",
@@ -127,6 +127,22 @@ describe("convertType", () => {
         child: {
           __type: "PrimitiveTO",
           kind: "string",
+        },
+      })
+
+      // array in property
+      const arrInProp = types[2]?.type
+      expect(arrInProp?.__type).toBe("ObjectTO")
+      if (arrInProp?.__type !== "ObjectTO") return
+      expect(arrInProp.getProps()[0]).toStrictEqual({
+        propName: "arr",
+        type: {
+          __type: "ArrayTO",
+          typeName: "string[]",
+          child: {
+            __type: "PrimitiveTO",
+            kind: "string",
+          },
         },
       })
     }
