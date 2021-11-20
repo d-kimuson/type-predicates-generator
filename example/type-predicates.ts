@@ -16,22 +16,23 @@ const isUndefined = (value: unknown): value is undefined => typeof value === 'un
 const isDate = (value: unknown): value is Date =>
   value instanceof Date || Object.prototype.toString.call(value) === '[Object Date]'
 const isNull = (value: unknown): value is null => value === null;
+const isArray = <T>(childCheckFn: (value: unknown) => value is T) =>
+  (array: unknown): array is T[] =>
+    Array.isArray(array) &&
+    array.reduce((s: boolean, t: unknown) => s && childCheckFn(t), true);
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
-export const isArrStr = (arg_0: unknown): arg_0 is ArrStr => Array.isArray(arg_0) &&
-  arg_0.reduce((s: boolean, t: unknown) => s && (isString)(t) , true);
+export const isArrStr = (arg_0: unknown): arg_0 is ArrStr => isArray(isString)(arg_0);
 export function assertIsArrStr(value: unknown): asserts value is ArrStr {
   if (!isArrStr(value)) throw new TypeError(`value must be ArrStr but received ${value}`)
 };
-export const isArrStr2 = (arg_0: unknown): arg_0 is ArrStr2 => Array.isArray(arg_0) &&
-  arg_0.reduce((s: boolean, t: unknown) => s && (isString)(t) , true);
+export const isArrStr2 = (arg_0: unknown): arg_0 is ArrStr2 => isArray(isString)(arg_0);
 export function assertIsArrStr2(value: unknown): asserts value is ArrStr2 {
   if (!isArrStr2(value)) throw new TypeError(`value must be ArrStr2 but received ${value}`)
 };
 export const isArrInProp = (arg_0: unknown): arg_0 is ArrInProp => isObject(arg_0) &&
-  ('arr' in arg_0 && ((arg_1: unknown): boolean => Array.isArray(arg_1) &&
-  arg_1.reduce((s: boolean, t: unknown) => s && (isString)(t) , true))(arg_0['arr']));
+  ('arr' in arg_0 && ((arg_1: unknown): boolean => isArray(isString)(arg_1))(arg_0['arr']));
 export function assertIsArrInProp(value: unknown): asserts value is ArrInProp {
   if (!isArrInProp(value)) throw new TypeError(`value must be ArrInProp but received ${value}`)
 };
@@ -63,8 +64,7 @@ export function assertIsTrue(value: unknown): asserts value is True {
   if (!isTrue(value)) throw new TypeError(`value must be True but received ${value}`)
 };
 export const isObj = (arg_0: unknown): arg_0 is Obj => isObject(arg_0) &&
-  ('name' in arg_0 && (isString)(arg_0['name'])) && ('names' in arg_0 && ((arg_1: unknown): boolean => Array.isArray(arg_1) &&
-  arg_1.reduce((s: boolean, t: unknown) => s && (isString)(t) , true))(arg_0['names'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || (isString)(arg_1))(arg_0['maybeName'])) && ('time' in arg_0 && (isDate)(arg_0['time']));
+  ('name' in arg_0 && (isString)(arg_0['name'])) && ('names' in arg_0 && ((arg_1: unknown): boolean => isArray(isString)(arg_1))(arg_0['names'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || (isString)(arg_1))(arg_0['maybeName'])) && ('time' in arg_0 && (isDate)(arg_0['time']));
 export function assertIsObj(value: unknown): asserts value is Obj {
   if (!isObj(value)) throw new TypeError(`value must be Obj but received ${value}`)
 };
@@ -94,9 +94,7 @@ export function assertIsOrder(value: unknown): asserts value is Order {
 };
 export const isPet = (arg_0: unknown): arg_0 is Pet => isObject(arg_0) &&
   (((arg_1: unknown): boolean => (isUndefined)(arg_1) || (isNumber)(arg_1))(arg_0['id'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || ((arg_2: unknown): boolean => isObject(arg_2) &&
-  (((arg_3: unknown): boolean => (isUndefined)(arg_3) || (isString)(arg_3))(arg_2['name'])) && (((arg_3: unknown): boolean => (isUndefined)(arg_3) || (isNumber)(arg_3))(arg_2['id'])))(arg_1))(arg_0['category'])) && ('name' in arg_0 && (isString)(arg_0['name'])) && ('photoUrls' in arg_0 && ((arg_1: unknown): boolean => Array.isArray(arg_1) &&
-  arg_1.reduce((s: boolean, t: unknown) => s && (isString)(t) , true))(arg_0['photoUrls'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || ((arg_2: unknown): boolean => Array.isArray(arg_2) &&
-  arg_2.reduce((s: boolean, t: unknown) => s && (isTag)(t) , true))(arg_1))(arg_0['tags'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || ((arg_2: unknown): boolean => arg_2 === "available")(arg_1) || ((arg_2: unknown): boolean => arg_2 === "pending")(arg_1) || ((arg_2: unknown): boolean => arg_2 === "sold")(arg_1))(arg_0['status']));
+  (((arg_3: unknown): boolean => (isUndefined)(arg_3) || (isString)(arg_3))(arg_2['name'])) && (((arg_3: unknown): boolean => (isUndefined)(arg_3) || (isNumber)(arg_3))(arg_2['id'])))(arg_1))(arg_0['category'])) && ('name' in arg_0 && (isString)(arg_0['name'])) && ('photoUrls' in arg_0 && ((arg_1: unknown): boolean => isArray(isString)(arg_1))(arg_0['photoUrls'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || ((arg_2: unknown): boolean => isArray(isTag)(arg_2))(arg_1))(arg_0['tags'])) && (((arg_1: unknown): boolean => (isUndefined)(arg_1) || ((arg_2: unknown): boolean => arg_2 === "available")(arg_1) || ((arg_2: unknown): boolean => arg_2 === "pending")(arg_1) || ((arg_2: unknown): boolean => arg_2 === "sold")(arg_1))(arg_0['status']));
 export function assertIsPet(value: unknown): asserts value is Pet {
   if (!isPet(value)) throw new TypeError(`value must be Pet but received ${value}`)
 };

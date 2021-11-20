@@ -45,6 +45,16 @@ const specialTypePredicateMap = {
 const utilTypePredicateMap = {
   object: `const isObject = (value: unknown): value is Record<string, unknown> =>
       typeof value === 'object' && value !== null && !Array.isArray(value);`,
+  array: `const isArray = <T>(childCheckFn: (value: unknown) => value is T) =>
+      (array: unknown): array is T[] =>
+        Array.isArray(array) && (
+          typeof array[0] === "undefined" ||
+          childCheckFn(array[0])
+        );`,
+  strictArray: `const isArray = <T>(childCheckFn: (value: unknown) => value is T) =>
+      (array: unknown): array is T[] =>
+        Array.isArray(array) &&
+        array.reduce((s: boolean, t: unknown) => s && childCheckFn(t), true);`,
 }
 
 function isPossibleUseTypeName(
@@ -129,6 +139,7 @@ export function generateTypePredicates(
         )
         .join(" || ")}`
     } else if (type.__type === "ArrayTO") {
+      usedUtils.push(strictArrayCheck ? "strictArray" : "array")
       const checkChildFn = generateCheckFn({
         type: type.child,
         parentArgCount: argCount,
@@ -137,12 +148,7 @@ export function generateTypePredicates(
       return `${generateDeclare(
         argName(),
         typeName
-      )}Array.isArray(${argName()}) &&
-      ${
-        strictArrayCheck
-          ? `${argName()}.reduce((s: boolean, t: unknown) => s && (${checkChildFn})(t) , true)`
-          : `(${argName()}[0] === undefined || (${checkChildFn})(${argName()}[0]))`
-      }`
+      )}isArray(${checkChildFn})(${argName()})`
     } else if (type.__type === "ObjectTO") {
       usedUtils.push("object")
       return `${generateDeclare(argName(), typeName)}isObject(${argName()}) &&
