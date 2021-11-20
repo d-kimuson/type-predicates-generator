@@ -7,6 +7,7 @@
     "typecheck": "tsc -p . --noEmit",
     "codegen:tpg": "type-predicates-generator -a -f 'types/*.ts' --strict-array-check",
     "watch:tpg": "yarn codegen:tpg -w",
+    "codegen:openapi": "openapi-generator-cli generate -g typescript-axios -i https://petstore.swagger.io/v2/swagger.json -o ./typescript-axios",
     "test": "jest",
     "test:watch": "jest --watch"
   },
@@ -14,8 +15,8 @@
     "type-predicates-generator": "../"
   },
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.4.16",
     "@types/jest": "^27.0.2",
-    "@types/node": "^16.11.7",
     "jest": "^27.3.1",
     "ts-jest": "^27.0.7",
     "tsd": "^0.18.0",

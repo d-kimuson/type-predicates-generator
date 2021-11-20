@@ -5,7 +5,7 @@ import { run } from "./src/generate"
 
   run({
     tsconfigPath,
-    fileGlobs: ["**/types/*.ts"],
+    fileGlobs: ["**/types/**/*.ts"],
     basePath: resolve(__dirname, "./example"),
     output: resolve(__dirname, "./example/type-predicates.ts"),
     option: {

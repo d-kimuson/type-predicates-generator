@@ -273,7 +273,7 @@ describe("convertType", () => {
     }
   })
 
-  it("object", () => {
+  it("re-export", () => {
     const typesResult = handler.extractTypes(
       absolutePath("./types/re-export.ts")
     )
@@ -283,15 +283,14 @@ describe("convertType", () => {
     }
 
     const types = typesResult.ok
-    expect(types.length).toStrictEqual(1)
+    expect(types.length).toStrictEqual(6)
 
-    const [type1, type2] = types
+    const [type1] = types
     expect(type1?.type.__type).toStrictEqual("ObjectTO")
     if (type1?.type.__type !== "ObjectTO") {
       return
     }
 
-    expect(type2).not.toBeDefined()
     expect(type1.type.getProps()).toStrictEqual([
       {
         propName: "name",
