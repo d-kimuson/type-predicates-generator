@@ -17,9 +17,13 @@ const isDate = (value: unknown): value is Date =>
   value instanceof Date || Object.prototype.toString.call(value) === '[Object Date]'
 const isNull = (value: unknown): value is null => value === null;
 const isArray = <T>(childCheckFn: ((value: unknown) => value is T) | ((value: unknown) => boolean)) =>
-  (array: unknown): boolean =>
-    Array.isArray(array) &&
-    array.reduce((s: boolean, t: unknown) => s && childCheckFn(t), true);
+  (array: unknown): boolean => {
+    if (!Array.isArray(array)) return false;
+    for (const val of array) {
+      if (!childCheckFn(val)) return false;
+    }
+    return true;
+  }
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 const isUnion = (unionChecks: ((value: unknown) => boolean)[]) =>

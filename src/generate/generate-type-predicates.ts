@@ -52,9 +52,13 @@ const utilTypePredicateMap = {
           childCheckFn(array[0])
         );`,
   strictArray: `const isArray = <T>(childCheckFn: ((value: unknown) => value is T) | ((value: unknown) => boolean)) =>
-      (array: unknown): boolean =>
-        Array.isArray(array) &&
-        array.reduce((s: boolean, t: unknown) => s && childCheckFn(t), true);`,
+      (array: unknown): boolean => {
+        if (!Array.isArray(array)) return false;
+        for (const val of array) {
+          if (!childCheckFn(val)) return false;
+        }
+        return true;
+      }`,
   union: `const isUnion = (unionChecks: ((value: unknown) => boolean)[]) =>
       (value: unknown): boolean =>
         unionChecks.reduce((s: boolean, isT) => s || isT(value), false)`,
