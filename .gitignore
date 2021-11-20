@@ -117,5 +117,5 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-example/type-predicates.ts
+# example/type-predicates.ts
 .vscode/settings.json
