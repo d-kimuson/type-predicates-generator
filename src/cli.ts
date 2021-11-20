@@ -12,11 +12,7 @@ program
     "tsconfig.json"
   )
   .option("-f, --file-glob <type>", "file glob pattern target types", "**/*.ts")
-  .option(
-    "-o, --output <type>",
-    "file glob pattern that original types are defined for generated.",
-    "type-predicates.ts"
-  )
+  .option("-o, --output <type>", "output file path", "type-predicates.ts")
   .option("-b, --base-path <type>", "project base path", "./")
   .option("-a, --asserts", "generate assert functions or not", false)
   .option("-w, --watch", "watch or not", false)
