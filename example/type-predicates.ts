@@ -24,7 +24,6 @@ const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 const isUnion = (unionChecks: ((value: unknown) => boolean)[]) =>
   (value: unknown): boolean =>
-    Array.isArray(value) &&
     unionChecks.reduce((s: boolean, isT) => s || isT(value), false)
 
 export const isArrStr = (arg_0: unknown): arg_0 is ArrStr => isArray(isString)(arg_0);

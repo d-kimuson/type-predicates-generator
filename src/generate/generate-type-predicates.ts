@@ -57,7 +57,6 @@ const utilTypePredicateMap = {
         array.reduce((s: boolean, t: unknown) => s && childCheckFn(t), true);`,
   union: `const isUnion = (unionChecks: ((value: unknown) => boolean)[]) =>
       (value: unknown): boolean =>
-        Array.isArray(value) &&
         unionChecks.reduce((s: boolean, isT) => s || isT(value), false)`,
 }
 
