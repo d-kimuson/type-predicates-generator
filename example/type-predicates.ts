@@ -16,25 +16,33 @@ const isUndefined = (value: unknown): value is undefined => typeof value === 'un
 const isDate = (value: unknown): value is Date =>
   value instanceof Date || Object.prototype.toString.call(value) === '[Object Date]'
 const isNull = (value: unknown): value is null => value === null;
-const isArray = <T>(childCheckFn: ((value: unknown) => value is T) | ((value: unknown) => boolean)) =>
-  (array: unknown): boolean => {
-    if (!Array.isArray(array)) return false;
-    for (const val of array) {
-      if (!childCheckFn(val)) return false;
-    }
-    return true;
-  }
+type ArrayCheckOption = 'all' | 'first';
+const isArray = <T>(
+  childCheckFn:
+    | ((value: unknown) => value is T)
+    | ((value: unknown) => boolean),
+  checkOption: ArrayCheckOption = 'all'
+) => (array: unknown): boolean =>
+  Array.isArray(array) &&
+  (checkOption === 'all'
+    ? ((array) => {
+        for (const val of array) {
+          if (!childCheckFn(val)) return false
+        }
+        return true;
+      })(array)
+    : typeof array[0] === "undefined" || childCheckFn(array[0]));
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 const isUnion = (unionChecks: ((value: unknown) => boolean)[]) =>
   (value: unknown): boolean =>
     unionChecks.reduce((s: boolean, isT) => s || isT(value), false)
 
-export const isArrStr = (arg_0: unknown): arg_0 is ArrStr => isArray(isString)(arg_0);
+export const isArrStr = (arg_0: unknown, checkOpt: ArrayCheckOption = 'all'): arg_0 is ArrStr => isArray(isString, checkOpt)(arg_0);
 export function assertIsArrStr(value: unknown): asserts value is ArrStr {
   if (!isArrStr(value)) throw new TypeError(`value must be ArrStr but received ${value}`)
 };
-export const isArrStr2 = (arg_0: unknown): arg_0 is ArrStr2 => isArray(isString)(arg_0);
+export const isArrStr2 = (arg_0: unknown, checkOpt: ArrayCheckOption = 'all'): arg_0 is ArrStr2 => isArray(isString, checkOpt)(arg_0);
 export function assertIsArrStr2(value: unknown): asserts value is ArrStr2 {
   if (!isArrStr2(value)) throw new TypeError(`value must be ArrStr2 but received ${value}`)
 };

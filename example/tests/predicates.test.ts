@@ -61,6 +61,9 @@ describe("array", () => {
     expect(isArrStr([-1, -1])).toBe(false) // type wrong
     expect(isArrStr(["hello", "world", -1])).toBe(false) // partially type wrong
     expect(isArrStr({ 0: "hello" })).toBe(false) // not array
+
+    // check only first item
+    expect(isArrStr(["hello", "world", -1], "first")).toBe(true)
   })
 })
 

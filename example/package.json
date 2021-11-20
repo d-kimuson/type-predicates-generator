@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "typecheck": "tsc -p . --noEmit",
-    "codegen:tpg": "type-predicates-generator -a -f 'types/*.ts' --strict-array-check",
+    "codegen:tpg": "type-predicates-generator -a -f 'types/*.ts'",
     "watch:tpg": "yarn codegen:tpg -w",
     "codegen:openapi": "openapi-generator-cli generate -g typescript-axios -i https://petstore.swagger.io/v2/swagger.json -o ./typescript-axios",
     "test": "jest",

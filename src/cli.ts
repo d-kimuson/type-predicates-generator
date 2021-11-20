@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { resolve } from "path"
 import { Command } from "commander"
+import type { ArrayCheckOption } from "./generate"
 import { run } from "./generate"
 
 const program = new Command()
@@ -20,9 +21,9 @@ program
   .option("-a, --asserts", "generate assert functions or not", false)
   .option("-w, --watch", "watch or not", false)
   .option(
-    "--strict-array-check",
-    "check all elements (or only first element) if they match the element type",
-    false
+    "--default-array-check-option",
+    "how to check child element type. 'all' or 'first'",
+    "all"
   )
   .parse(process.argv)
 
@@ -33,7 +34,7 @@ const option = program.opts<{
   basePath: string
   asserts: boolean
   watch: boolean
-  strictArrayCheck: boolean
+  defaultArrayCheckOption: ArrayCheckOption
 }>()
 
 const cwd = process.cwd()
@@ -46,6 +47,6 @@ run({
   option: {
     asserts: option.asserts,
     watch: option.watch,
-    strictArrayCheck: option.strictArrayCheck,
+    defaultArrayCheckOption: option.defaultArrayCheckOption,
   },
 })

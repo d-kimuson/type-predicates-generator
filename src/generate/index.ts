@@ -9,10 +9,12 @@ import { generateTypePredicates } from "~/generate/generate-type-predicates"
 import type * as to from "~/type-object"
 import { isNg } from "~/utils"
 
+export type ArrayCheckOption = "all" | "first"
+
 type GenerateOption = {
   asserts: boolean
   watch: boolean
-  strictArrayCheck: boolean
+  defaultArrayCheckOption: ArrayCheckOption
 }
 
 export async function run({
@@ -82,7 +84,7 @@ const generateAndWriteCodes = (
   program: ts.Program,
   files: string[],
   output: string,
-  { asserts, strictArrayCheck }: GenerateOption
+  { asserts, defaultArrayCheckOption }: GenerateOption
 ) => {
   const handler = new CompilerApiHandler(program)
 
@@ -111,6 +113,10 @@ const generateAndWriteCodes = (
     }
   })
 
-  const generatedCode = generateTypePredicates(types, asserts, strictArrayCheck)
+  const generatedCode = generateTypePredicates(
+    types,
+    asserts,
+    defaultArrayCheckOption
+  )
   writeFileSync(output, generatedCode)
 }

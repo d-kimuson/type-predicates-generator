@@ -1,5 +1,6 @@
 import * as dedent from "dedent"
 import { uniq } from "ramda"
+import type { ArrayCheckOption } from "."
 import type * as to from "../type-object"
 
 const primitiveTypePredicateNameMap = {
@@ -62,20 +63,23 @@ const specialTypePredicateMap = {
 const utilTypePredicateMap = {
   object: `const isObject = (value: unknown): value is Record<string, unknown> =>
       typeof value === 'object' && value !== null && !Array.isArray(value);`,
-  array: `const isArray = <T>(childCheckFn: ((value: unknown) => value is T) | ((value: unknown) => boolean)) =>
-      (array: unknown): boolean =>
-        Array.isArray(array) && (
-          typeof array[0] === "undefined" ||
-          childCheckFn(array[0])
-        );`,
-  strictArray: `const isArray = <T>(childCheckFn: ((value: unknown) => value is T) | ((value: unknown) => boolean)) =>
-      (array: unknown): boolean => {
-        if (!Array.isArray(array)) return false;
-        for (const val of array) {
-          if (!childCheckFn(val)) return false;
-        }
-        return true;
-      }`,
+  array: (option: ArrayCheckOption) =>
+    `type ArrayCheckOption = 'all' | 'first';\n` +
+    `const isArray = <T>(
+      childCheckFn:
+        | ((value: unknown) => value is T)
+        | ((value: unknown) => boolean),
+      checkOption: ArrayCheckOption = '${option}'
+    ) => (array: unknown): boolean =>
+      Array.isArray(array) &&
+      (checkOption === 'all'
+        ? ((array) => {
+            for (const val of array) {
+              if (!childCheckFn(val)) return false
+            }
+            return true;
+          })(array)
+        : typeof array[0] === "undefined" || childCheckFn(array[0]));`,
   union: `const isUnion = (unionChecks: ((value: unknown) => boolean)[]) =>
       (value: unknown): boolean =>
         unionChecks.reduce((s: boolean, isT) => s || isT(value), false)`,
@@ -87,10 +91,17 @@ function isPossibleUseTypeName(
   return ["ArrayTO", "ObjectTO", "UnionTO"].includes(value.__type)
 }
 
-function generateDeclare(argName: string, typeName?: string) {
-  return `(${argName}: unknown): ${
-    typeName ? `${argName} is ${typeName}` : "boolean"
-  } => `
+function generateDeclare(
+  argName: string,
+  typeName?: string,
+  additionalArgs: { name: string; type: string }[] = []
+) {
+  return `(${argName}: unknown${
+    additionalArgs.length !== 0
+      ? ", " +
+        additionalArgs.map(({ name, type }) => `${name}: ${type}`).join(", ")
+      : ""
+  }): ${typeName ? `${argName} is ${typeName}` : "boolean"} => `
 }
 
 export function isMaybeUndefined(type: to.TypeObject): boolean {
@@ -112,7 +123,7 @@ export function generateTypePredicates(
     }[]
   }[],
   asserts = false,
-  strictArrayCheck = false
+  defaultArrayCheckOption: ArrayCheckOption = "all"
 ): string {
   const usedPrimitives: to.PrimitiveTO["kind"][] = []
   const usedSpecials: to.SpecialTO["kind"][] = []
@@ -160,16 +171,27 @@ export function generateTypePredicates(
         )
         .join(", ")}])(${argName()})`
     } else if (type.__type === "ArrayTO") {
-      usedUtils.push(strictArrayCheck ? "strictArray" : "array")
+      usedUtils.push("array")
       const checkChildFn = generateCheckFn({
         type: type.child,
         parentArgCount: argCount,
       })
+      const checkOptionArgName = "checkOpt"
 
       return `${generateDeclare(
         argName(),
-        typeName
-      )}isArray(${checkChildFn})(${argName()})`
+        typeName,
+        isToplevel
+          ? [
+              {
+                name: checkOptionArgName,
+                type: "ArrayCheckOption = 'all'",
+              },
+            ]
+          : []
+      )}isArray(${checkChildFn}${
+        isToplevel ? `, ${checkOptionArgName}` : ""
+      })(${argName()})`
     } else if (type.__type === "ObjectTO") {
       usedUtils.push("object")
       return `${generateDeclare(argName(), typeName)}isObject(${argName()}) &&
@@ -278,7 +300,11 @@ export function generateTypePredicates(
     [
       usedPrimitives.map((kind) => primitiveTypePredicateMap[kind]),
       usedSpecials.map((kind) => specialTypePredicateMap[kind]),
-      usedUtils.map((name) => utilTypePredicateMap[name]),
+      usedUtils.map((name) =>
+        name === "array"
+          ? utilTypePredicateMap[name](defaultArrayCheckOption)
+          : utilTypePredicateMap[name]
+      ),
     ].flat()
   )
 

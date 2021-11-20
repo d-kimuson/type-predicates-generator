@@ -11,7 +11,7 @@ import { run } from "./src/generate"
     option: {
       watch: false,
       asserts: true,
-      strictArrayCheck: true,
+      defaultArrayCheckOption: "all",
     },
   })
 })()
