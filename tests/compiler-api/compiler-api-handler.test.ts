@@ -343,7 +343,7 @@ describe("convertType", () => {
     }
 
     const types = typesResult.ok
-    expect(types.length).toStrictEqual(6)
+    expect(types.length).toStrictEqual(7)
 
     const [type1] = types
     expect(type1?.type.__type).toStrictEqual("ObjectTO")

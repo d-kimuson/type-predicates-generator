@@ -6,5 +6,6 @@ export {
   Order,
   Pet,
   Tag,
-  PetStatusEnum
+  PetStatusEnum,
+  User
 } from "../typescript-axios/api"

@@ -226,6 +226,7 @@ export function generateTypePredicates(
       file.types.map((type) => ({ ...type, importPath: file.importPath }))
     )
     .map(({ type, typeName, importPath }) => {
+      // Do not generate reserved function name
       if (reservedNames.includes(typeName)) {
         console.log(`is${typeName} is reserved word, so skip generation.`)
         skipImports.push({
@@ -235,12 +236,21 @@ export function generateTypePredicates(
         return ``
       }
 
-      if (
-        // Do not generate predicates for top-level unknown type
-        generatedTypeNames.includes(typeName) ||
-        // Prevent re-generate predicates
-        type.__type === "UnknownTO"
-      ) {
+      // Do not generate predicates for top-level unknown type
+      if (generatedTypeNames.includes(typeName)) {
+        console.warn(
+          `${typeName} skips generation because duplicated. If it isn't caused by re-export, there may be a problem with the predicate function that uses is${typeName}.`
+        )
+        skipImports.push({
+          typeName,
+          importPath,
+        })
+        return ``
+      }
+
+      // Prevent re-generate predicates
+      if (type.__type === "UnknownTO") {
+        console.warn(`Unsupported type ${typeName} is skipped.`)
         skipImports.push({
           typeName,
           importPath,
