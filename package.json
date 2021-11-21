@@ -75,5 +75,14 @@
     "tsc-alias": "^1.4.0",
     "tsconfig-paths": "^3.11.0",
     "tsd": "^0.18.0"
-  }
+  },
+  "keywords": [
+    "typescript",
+    "codegen",
+    "predicate",
+    "assertion",
+    "ts",
+    "types",
+    "generator"
+  ]
 }
