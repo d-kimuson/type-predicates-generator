@@ -123,7 +123,8 @@ export function generateTypePredicates(
     }[]
   }[],
   asserts = false,
-  defaultArrayCheckOption: ArrayCheckOption = "all"
+  defaultArrayCheckOption: ArrayCheckOption = "all",
+  comment = false
 ): string {
   const usedPrimitives: to.PrimitiveTO["kind"][] = []
   const usedSpecials: to.SpecialTO["kind"][] = []
@@ -237,6 +238,37 @@ export function generateTypePredicates(
     }`
   }
 
+  const generateJSDocComment = ({
+    type,
+    typeName,
+    isAssertion,
+  }: {
+    type: to.TypeObject
+    typeName: string
+    isAssertion: boolean
+  }): string => {
+    return isAssertion
+      ? `/**
+      * Assert if a variable is of type {@link ${typeName}} and throws a TypeError if the assertion fails.
+      * This function is automatically generated using [type-predicates-generator](https://www.npmjs.com/package/type-predicates-generator).
+      * @param value Argument to inspect.
+      * @throw TypeError if the given argument is not compatible with the type {@link ${typeName}}.
+      */
+      `
+      : `/**
+      * Check if a variable is of type {@link ${typeName}} and narrow it down to that type if the check passes.
+      * This function is automatically generated using [type-predicates-generator](https://www.npmjs.com/package/type-predicates-generator).
+      * @param arg_0 Argument to inspect.
+      ${
+        type.__type === "ArrayTO"
+          ? "* @param checkOpt Whether to check all elements of the array or only the first one."
+          : ""
+      }
+      * @return \`true\` if the argument is of type {@link ${typeName}}, \`false\` otherwise.
+      */
+      `
+  }
+
   const generatedTypeNames: string[] = []
   const skipImports: {
     typeName: string
@@ -282,14 +314,22 @@ export function generateTypePredicates(
 
       generatedTypeNames.push(typeName)
 
-      return `export const is${typeName} = ${generateCheckFn({
+      return `${
+        comment
+          ? generateJSDocComment({ type, typeName, isAssertion: false })
+          : ""
+      }export const is${typeName} = ${generateCheckFn({
         type,
         typeName,
         parentArgCount: -1,
       })};
     ${
       asserts
-        ? `export function assertIs${typeName}(value: unknown): asserts value is ${typeName} {
+        ? `${
+            comment
+              ? generateJSDocComment({ type, typeName, isAssertion: true })
+              : ""
+          }export function assertIs${typeName}(value: unknown): asserts value is ${typeName} {
       if (!is${typeName}(value)) throw new TypeError(\`value must be ${typeName} but received \${value}\`)
     };`
         : ""
