@@ -1,4 +1,3 @@
-import * as dedent from "dedent"
 import { uniq } from "ramda"
 import type { ArrayCheckOption } from "."
 import type * as to from "../type-object"
@@ -57,32 +56,32 @@ const specialTypePredicateMap = {
   never: "const isNever = (value: unknown): value is never => false;",
   void: "const isVoid = (value: unknown): value is void => false;",
   Date: `const isDate = (value: unknown): value is Date =>
-      value instanceof Date || Object.prototype.toString.call(value) === '[Object Date]'`,
+  value instanceof Date || Object.prototype.toString.call(value) === '[Object Date]'`,
 }
 
 const utilTypePredicateMap = {
   object: `const isObject = (value: unknown): value is Record<string, unknown> =>
-      typeof value === 'object' && value !== null && !Array.isArray(value);`,
+  typeof value === 'object' && value !== null && !Array.isArray(value);`,
   array: (option: ArrayCheckOption) =>
     `type ArrayCheckOption = 'all' | 'first';\n` +
     `const isArray = <T>(
-      childCheckFn:
-        | ((value: unknown) => value is T)
-        | ((value: unknown) => boolean),
-      checkOption: ArrayCheckOption = '${option}'
-    ) => (array: unknown): boolean =>
-      Array.isArray(array) &&
-      (checkOption === 'all'
-        ? ((array) => {
-            for (const val of array) {
-              if (!childCheckFn(val)) return false
-            }
-            return true;
-          })(array)
-        : typeof array[0] === "undefined" || childCheckFn(array[0]));`,
+  childCheckFn:
+    | ((value: unknown) => value is T)
+    | ((value: unknown) => boolean),
+  checkOption: ArrayCheckOption = '${option}'
+) => (array: unknown): boolean =>
+  Array.isArray(array) &&
+  (checkOption === 'all'
+    ? ((array) => {
+        for (const val of array) {
+          if (!childCheckFn(val)) return false
+        }
+        return true;
+      })(array)
+    : typeof array[0] === "undefined" || childCheckFn(array[0]));`,
   union: `const isUnion = (unionChecks: ((value: unknown) => boolean)[]) =>
-      (value: unknown): boolean =>
-        unionChecks.reduce((s: boolean, isT) => s || isT(value), false)`,
+  (value: unknown): boolean =>
+    unionChecks.reduce((s: boolean, isT) => s || isT(value), false)`,
 }
 
 function isPossibleUseTypeName(
@@ -195,18 +194,18 @@ export function generateTypePredicates(
     } else if (type.__type === "ObjectTO") {
       usedUtils.push("object")
       return `${generateDeclare(argName(), typeName)}isObject(${argName()}) &&
-      ${type
-        .getProps()
-        .map(
-          ({ propName, type }) =>
-            `(${
-              isMaybeUndefined(type) ? `` : `'${propName}' in ${argName()} && `
-            }(${generateCheckFn({
-              type,
-              parentArgCount: argCount,
-            })})(${argName()}['${propName}']))`
-        )
-        .join(" && ")}`
+  ${type
+    .getProps()
+    .map(
+      ({ propName, type }) =>
+        `(${
+          isMaybeUndefined(type) ? `` : `'${propName}' in ${argName()} && `
+        }(${generateCheckFn({
+          type,
+          parentArgCount: argCount,
+        })})(${argName()}['${propName}']))`
+    )
+    .join(" && ")}`
     } else if (type.__type === "TypeParameterTO") {
       return `(_) => true`
     } else if (type.__type === "TupleTO") {
@@ -287,13 +286,13 @@ export function generateTypePredicates(
         typeName,
         parentArgCount: -1,
       })};
-    ${
-      asserts
-        ? `export function assertIs${typeName}(value: unknown): asserts value is ${typeName} {
-      if (!is${typeName}(value)) throw new TypeError(\`value must be ${typeName} but received \${value}\`)
-    };`
-        : ""
-    }`
+${
+  asserts
+    ? `export function assertIs${typeName}(value: unknown): asserts value is ${typeName} {
+  if (!is${typeName}(value)) throw new TypeError(\`value must be ${typeName} but received \${value}\`)
+};`
+    : ""
+}`
     })
 
   const corePredicates = uniq(
@@ -308,8 +307,9 @@ export function generateTypePredicates(
     ].flat()
   )
 
-  return dedent(`
-    ${files
+  return (
+    `` +
+    `${files
       .filter(
         ({ types, importPath }) =>
           types.length -
@@ -333,8 +333,8 @@ export function generateTypePredicates(
       )
       .join(";\n")};
 
-    ${corePredicates.join("\n")}
+${corePredicates.join("\n")}
 
-    ${checkFns.map((checkFn) => checkFn).join("\n")}
-  `)
+${checkFns.map((checkFn) => checkFn).join("\n")}`
+  )
 }
