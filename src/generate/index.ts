@@ -15,6 +15,7 @@ type GenerateOption = {
   asserts: boolean
   watch: boolean
   defaultArrayCheckOption: ArrayCheckOption
+  comment: boolean
 }
 
 export async function run({
@@ -84,7 +85,7 @@ const generateAndWriteCodes = (
   program: ts.Program,
   files: string[],
   output: string,
-  { asserts, defaultArrayCheckOption }: GenerateOption
+  { asserts, defaultArrayCheckOption, comment }: GenerateOption
 ) => {
   const handler = new CompilerApiHandler(program)
 
@@ -116,7 +117,8 @@ const generateAndWriteCodes = (
   const generatedCode = generateTypePredicates(
     types,
     asserts,
-    defaultArrayCheckOption
+    defaultArrayCheckOption,
+    comment
   )
   writeFileSync(output, generatedCode)
 }

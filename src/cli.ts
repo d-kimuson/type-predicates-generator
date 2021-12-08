@@ -21,6 +21,7 @@ program
     "how to check child element type. 'all' or 'first'",
     "all"
   )
+  .option("-c, --comment", "generate JSDoc comments or not", false)
   .parse(process.argv)
 
 const option = program.opts<{
@@ -31,6 +32,7 @@ const option = program.opts<{
   asserts: boolean
   watch: boolean
   defaultArrayCheckOption: ArrayCheckOption
+  comment: boolean
 }>()
 
 const cwd = process.cwd()
@@ -44,5 +46,6 @@ run({
     asserts: option.asserts,
     watch: option.watch,
     defaultArrayCheckOption: option.defaultArrayCheckOption,
+    comment: option.comment,
   },
 })
