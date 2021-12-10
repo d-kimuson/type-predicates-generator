@@ -260,10 +260,10 @@ export function generateTypePredicates(
  * Check if a variable is of type {@link ${typeName}} and narrow it down to that type if the check passes.
  * This function is automatically generated using [type-predicates-generator](https://www.npmjs.com/package/type-predicates-generator).
  * @param arg_0 Argument to inspect.${
-    type.__type === "ArrayTO"
-      ? "\n * @param checkOpt Whether to check all elements of the array or only the first one."
-      : ""
-  }
+   type.__type === "ArrayTO"
+     ? "\n * @param checkOpt Whether to check all elements of the array or only the first one."
+     : ""
+ }
  * @return \`true\` if the argument is of type {@link ${typeName}}, \`false\` otherwise.
  */
 `
