@@ -80,6 +80,7 @@ isArrStr(["hello", "world"], "first") // only check first element
 | -a, --asserts                | `false`              | generate assert functions or not                                 |
 | -w, --watch                  | `false`              | watch or not                                                     |
 | --default-array-check-option | `all`                | how to check child element type. 'all' or 'first'                |
+| -c, --comment                | `false`              | generate JSDoc comments or not                                   |
 
 ## Unsupported
 
