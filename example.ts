@@ -12,7 +12,7 @@ import { run } from "./src/generate"
       watch: false,
       asserts: true,
       defaultArrayCheckOption: "all",
-      comment: false,
+      comment: true,
     },
   })
 })()
