@@ -22,6 +22,7 @@ program
     "all"
   )
   .option("-c, --comment", "generate JSDoc comments or not", false)
+  .option("--whitelist", "not allow non listed properties")
   .parse(process.argv)
 
 const option = program.opts<{
@@ -33,6 +34,7 @@ const option = program.opts<{
   watch: boolean
   defaultArrayCheckOption: ArrayCheckOption
   comment: boolean
+  whitelist: boolean
 }>()
 
 const cwd = process.cwd()
@@ -47,5 +49,6 @@ run({
     watch: option.watch,
     defaultArrayCheckOption: option.defaultArrayCheckOption,
     comment: option.comment,
+    whitelist: option.whitelist,
   },
 })
