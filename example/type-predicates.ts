@@ -34,6 +34,9 @@ const isArray = <T>(
     : typeof array[0] === "undefined" || childCheckFn(array[0]));
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
+const hasNotUnlistedProperties = (listedKeys: string[]) =>
+  (value: Record<string, unknown>): boolean =>
+    Object.keys(value).every(key => listedKeys.includes(key))
 const isUnion = (unionChecks: ((value: unknown) => boolean)[]) =>
   (value: unknown): boolean =>
     unionChecks.reduce((s: boolean, isT) => s || isT(value), false)
@@ -78,7 +81,7 @@ export function assertIsArrStr2(value: unknown): asserts value is ArrStr2 {
  * @param arg_0 Argument to inspect.
  * @return `true` if the argument is of type {@link ArrInProp}, `false` otherwise.
  */
-export const isArrInProp = (arg_0: unknown): arg_0 is ArrInProp => isObject(arg_0) &&
+export const isArrInProp = (arg_0: unknown): arg_0 is ArrInProp => isObject(arg_0) && hasNotUnlistedProperties(['arr'])(arg_0) &&
   ('arr' in arg_0 && ((arg_1: unknown): boolean => isArray(isString)(arg_1))(arg_0['arr']));
 /**
  * Assert if a variable is of type {@link ArrInProp} and throws a TypeError if the assertion fails.
@@ -95,7 +98,7 @@ export function assertIsArrInProp(value: unknown): asserts value is ArrInProp {
  * @param arg_0 Argument to inspect.
  * @return `true` if the argument is of type {@link Complex}, `false` otherwise.
  */
-export const isComplex = (arg_0: unknown): arg_0 is Complex => isObject(arg_0) &&
+export const isComplex = (arg_0: unknown): arg_0 is Complex => isObject(arg_0) && hasNotUnlistedProperties(['name', 'password'])(arg_0) &&
   (((arg_1: unknown): boolean => isUnion([isUndefined, isString])(arg_1))(arg_0['name'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, isString])(arg_1))(arg_0['password']));
 /**
  * Assert if a variable is of type {@link Complex} and throws a TypeError if the assertion fails.
@@ -112,7 +115,7 @@ export function assertIsComplex(value: unknown): asserts value is Complex {
  * @param arg_0 Argument to inspect.
  * @return `true` if the argument is of type {@link User}, `false` otherwise.
  */
-export const isUser = (arg_0: unknown): arg_0 is User => isObject(arg_0) &&
+export const isUser = (arg_0: unknown): arg_0 is User => isObject(arg_0) && hasNotUnlistedProperties(['id', 'firstName', 'lastName'])(arg_0) &&
   ('id' in arg_0 && (isNumber)(arg_0['id'])) && ('firstName' in arg_0 && (isString)(arg_0['firstName'])) && ('lastName' in arg_0 && (isString)(arg_0['lastName']));
 /**
  * Assert if a variable is of type {@link User} and throws a TypeError if the assertion fails.
@@ -129,7 +132,7 @@ export function assertIsUser(value: unknown): asserts value is User {
  * @param arg_0 Argument to inspect.
  * @return `true` if the argument is of type {@link ResultOfGenerics}, `false` otherwise.
  */
-export const isResultOfGenerics = (arg_0: unknown): arg_0 is ResultOfGenerics => isObject(arg_0) &&
+export const isResultOfGenerics = (arg_0: unknown): arg_0 is ResultOfGenerics => isObject(arg_0) && hasNotUnlistedProperties(['id', 'time'])(arg_0) &&
   (((arg_1: unknown): boolean => isUnion([isUndefined, isNumber])(arg_1))(arg_0['id'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, isDate])(arg_1))(arg_0['time']));
 /**
  * Assert if a variable is of type {@link ResultOfGenerics} and throws a TypeError if the assertion fails.
@@ -194,7 +197,7 @@ export function assertIsTrue(value: unknown): asserts value is True {
  * @param arg_0 Argument to inspect.
  * @return `true` if the argument is of type {@link Obj}, `false` otherwise.
  */
-export const isObj = (arg_0: unknown): arg_0 is Obj => isObject(arg_0) &&
+export const isObj = (arg_0: unknown): arg_0 is Obj => isObject(arg_0) && hasNotUnlistedProperties(['name', 'names', 'maybeName', 'time'])(arg_0) &&
   ('name' in arg_0 && (isString)(arg_0['name'])) && ('names' in arg_0 && ((arg_1: unknown): boolean => isArray(isString)(arg_1))(arg_0['names'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, isString])(arg_1))(arg_0['maybeName'])) && ('time' in arg_0 && (isDate)(arg_0['time']));
 /**
  * Assert if a variable is of type {@link Obj} and throws a TypeError if the assertion fails.
@@ -211,7 +214,7 @@ export function assertIsObj(value: unknown): asserts value is Obj {
  * @param arg_0 Argument to inspect.
  * @return `true` if the argument is of type {@link RecursiveObj}, `false` otherwise.
  */
-export const isRecursiveObj = (arg_0: unknown): arg_0 is RecursiveObj => isObject(arg_0) &&
+export const isRecursiveObj = (arg_0: unknown): arg_0 is RecursiveObj => isObject(arg_0) && hasNotUnlistedProperties(['name', 'child'])(arg_0) &&
   ('name' in arg_0 && (isString)(arg_0['name'])) && ('child' in arg_0 && (isRecursiveObj)(arg_0['child']));
 /**
  * Assert if a variable is of type {@link RecursiveObj} and throws a TypeError if the assertion fails.
@@ -261,7 +264,7 @@ export function assertIsNum(value: unknown): asserts value is Num {
  * @param arg_0 Argument to inspect.
  * @return `true` if the argument is of type {@link Category}, `false` otherwise.
  */
-export const isCategory = (arg_0: unknown): arg_0 is Category => isObject(arg_0) &&
+export const isCategory = (arg_0: unknown): arg_0 is Category => isObject(arg_0) && hasNotUnlistedProperties(['id', 'name'])(arg_0) &&
   (((arg_1: unknown): boolean => isUnion([isUndefined, isNumber])(arg_1))(arg_0['id'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, isString])(arg_1))(arg_0['name']));
 /**
  * Assert if a variable is of type {@link Category} and throws a TypeError if the assertion fails.
@@ -278,7 +281,7 @@ export function assertIsCategory(value: unknown): asserts value is Category {
  * @param arg_0 Argument to inspect.
  * @return `true` if the argument is of type {@link Order}, `false` otherwise.
  */
-export const isOrder = (arg_0: unknown): arg_0 is Order => isObject(arg_0) &&
+export const isOrder = (arg_0: unknown): arg_0 is Order => isObject(arg_0) && hasNotUnlistedProperties(['id', 'petId', 'quantity', 'shipDate', 'status', 'complete'])(arg_0) &&
   (((arg_1: unknown): boolean => isUnion([isUndefined, isNumber])(arg_1))(arg_0['id'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, isNumber])(arg_1))(arg_0['petId'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, isNumber])(arg_1))(arg_0['quantity'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, isString])(arg_1))(arg_0['shipDate'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, (arg_2: unknown): boolean => arg_2 === "placed", (arg_2: unknown): boolean => arg_2 === "approved", (arg_2: unknown): boolean => arg_2 === "delivered"])(arg_1))(arg_0['status'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, (arg_2: unknown): boolean => arg_2 === false, (arg_2: unknown): boolean => arg_2 === true])(arg_1))(arg_0['complete']));
 /**
  * Assert if a variable is of type {@link Order} and throws a TypeError if the assertion fails.
@@ -295,8 +298,8 @@ export function assertIsOrder(value: unknown): asserts value is Order {
  * @param arg_0 Argument to inspect.
  * @return `true` if the argument is of type {@link Pet}, `false` otherwise.
  */
-export const isPet = (arg_0: unknown): arg_0 is Pet => isObject(arg_0) &&
-  (((arg_1: unknown): boolean => isUnion([isUndefined, isNumber])(arg_1))(arg_0['id'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, (arg_2: unknown): boolean => isObject(arg_2) &&
+export const isPet = (arg_0: unknown): arg_0 is Pet => isObject(arg_0) && hasNotUnlistedProperties(['id', 'category', 'name', 'photoUrls', 'tags', 'status'])(arg_0) &&
+  (((arg_1: unknown): boolean => isUnion([isUndefined, isNumber])(arg_1))(arg_0['id'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, (arg_2: unknown): boolean => isObject(arg_2) && hasNotUnlistedProperties(['name', 'id'])(arg_2) &&
   (((arg_3: unknown): boolean => isUnion([isUndefined, isString])(arg_3))(arg_2['name'])) && (((arg_3: unknown): boolean => isUnion([isUndefined, isNumber])(arg_3))(arg_2['id']))])(arg_1))(arg_0['category'])) && ('name' in arg_0 && (isString)(arg_0['name'])) && ('photoUrls' in arg_0 && ((arg_1: unknown): boolean => isArray(isString)(arg_1))(arg_0['photoUrls'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, (arg_2: unknown): boolean => isArray(isTag)(arg_2)])(arg_1))(arg_0['tags'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, (arg_2: unknown): boolean => arg_2 === "available", (arg_2: unknown): boolean => arg_2 === "pending", (arg_2: unknown): boolean => arg_2 === "sold"])(arg_1))(arg_0['status']));
 /**
  * Assert if a variable is of type {@link Pet} and throws a TypeError if the assertion fails.
@@ -313,7 +316,7 @@ export function assertIsPet(value: unknown): asserts value is Pet {
  * @param arg_0 Argument to inspect.
  * @return `true` if the argument is of type {@link Tag}, `false` otherwise.
  */
-export const isTag = (arg_0: unknown): arg_0 is Tag => isObject(arg_0) &&
+export const isTag = (arg_0: unknown): arg_0 is Tag => isObject(arg_0) && hasNotUnlistedProperties(['id', 'name'])(arg_0) &&
   (((arg_1: unknown): boolean => isUnion([isUndefined, isNumber])(arg_1))(arg_0['id'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, isString])(arg_1))(arg_0['name']));
 /**
  * Assert if a variable is of type {@link Tag} and throws a TypeError if the assertion fails.

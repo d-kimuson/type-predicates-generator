@@ -81,6 +81,7 @@ isArrStr(["hello", "world"], "first") // only check first element
 | -w, --watch                  | `false`              | watch or not                                                     |
 | --default-array-check-option | `all`                | how to check child element type. 'all' or 'first'                |
 | -c, --comment                | `false`              | generate JSDoc comments or not                                   |
+| --whitelist                  | `false`              | not allow non listed properties                                  |
 
 ## Unsupported
 

@@ -119,3 +119,5 @@ dist
 
 # example/type-predicates.ts
 .vscode/settings.json
+
+.history
