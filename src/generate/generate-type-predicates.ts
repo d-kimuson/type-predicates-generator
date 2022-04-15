@@ -82,6 +82,9 @@ const utilTypePredicateMap = {
   union: `const isUnion = (unionChecks: ((value: unknown) => boolean)[]) =>
   (value: unknown): boolean =>
     unionChecks.reduce((s: boolean, isT) => s || isT(value), false)`,
+  hasNotUnlistedProperties: `const hasNotUnlistedProperties = (listedKeys: string[]) =>
+  (value: Record<string, unknown>): boolean =>
+    Object.keys(value).every(key => listedKeys.includes(key))`,
 }
 
 function isPossibleUseTypeName(
@@ -123,7 +126,8 @@ export function generateTypePredicates(
   }[],
   asserts = false,
   defaultArrayCheckOption: ArrayCheckOption = "all",
-  comment = false
+  comment = false,
+  whitelist = false
 ): string {
   const usedPrimitives: to.PrimitiveTO["kind"][] = []
   const usedSpecials: to.SpecialTO["kind"][] = []
@@ -194,7 +198,18 @@ export function generateTypePredicates(
       })(${argName()})`
     } else if (type.__type === "ObjectTO") {
       usedUtils.push("object")
-      return `${generateDeclare(argName(), typeName)}isObject(${argName()}) &&
+      if (whitelist) usedUtils.push("hasNotUnlistedProperties")
+      return `${generateDeclare(
+        argName(),
+        typeName
+      )}isObject(${argName()}) && ${
+        whitelist
+          ? `hasNotUnlistedProperties([${type
+              .getProps()
+              .map((prop) => `'${prop.propName}'`)
+              .join(", ")}])(${argName()}) &&`
+          : ``
+      }
   ${type
     .getProps()
     .map(

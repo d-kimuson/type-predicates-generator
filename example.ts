@@ -13,6 +13,7 @@ import { run } from "./src/generate"
       asserts: true,
       defaultArrayCheckOption: "all",
       comment: true,
+      whitelist: true,
     },
   })
 })()
