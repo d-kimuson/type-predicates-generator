@@ -107,7 +107,9 @@ const generateAndWriteCodes = (
         .replace(".ts", "")
 
     if (isNg(result)) {
-      console.warn(`Fail to extract types from ${filePath}`)
+      console.warn(
+        `Failed to extract types from ${filePath} for reason ${result.ng.reason}`
+      )
       return []
     }
 
