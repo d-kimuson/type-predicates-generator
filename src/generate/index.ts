@@ -37,7 +37,7 @@ export async function run({
       glob.sync(fileGlob, {
         sync: true,
         cwd: basePath,
-        ignore: ["**/node_modules/**/*.ts", output],
+        ignore: ["**/node_modules/**/*", output],
       })
     )
     .map((filePath) => resolve(basePath, filePath))
