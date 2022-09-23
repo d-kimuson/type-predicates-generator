@@ -1,3 +1,11 @@
+# Change Log
+
+## Unreleased
+
+### Changed
+
+- When a file fails to be extracted, a warning message is showed instead of exiting unexpectedly.
+
 ## 0.3.1 (2021-12-10)
 
 ### Features
