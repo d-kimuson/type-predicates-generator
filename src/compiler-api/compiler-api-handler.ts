@@ -196,7 +196,6 @@ export class CompilerApiHandler {
               propName: string
               type: to.TypeObject
             } => {
-              const typeNode = symbol.valueDeclaration?.type
               const declare = (symbol.declarations ?? [])[0]
               const type = declare
                 ? this.#typeChecker.getTypeOfSymbolAtLocation(symbol, declare)
@@ -204,23 +203,14 @@ export class CompilerApiHandler {
 
               return {
                 propName: String(symbol.escapedName),
-                type:
-                  typeNode && ts.isArrayTypeNode(typeNode)
-                    ? {
-                        __type: "ArrayTO",
-                        typeName: this.#typeToString(
-                          this.#typeChecker.getTypeFromTypeNode(typeNode)
-                        ),
-                        child: this.#extractArrayTFromTypeNode(typeNode),
-                      }
-                    : type
-                    ? this.#isCallable(type)
-                      ? skip()
-                      : this.#convertType(type)
-                    : {
-                        __type: "UnknownTO",
-                        kind: "prop",
-                      },
+                type: type
+                  ? this.#isCallable(type)
+                    ? skip()
+                    : this.#convertType(type)
+                  : {
+                      __type: "UnknownTO",
+                      kind: "prop",
+                    },
               }
             }
           )
