@@ -37,7 +37,7 @@ export async function run({
       glob.sync(fileGlob, {
         sync: true,
         cwd: basePath,
-        ignore: ["**/node_modules/**/*.ts", output],
+        ignore: ["**/node_modules/**/*", output],
       })
     )
     .map((filePath) => resolve(basePath, filePath))
@@ -82,6 +82,14 @@ export async function run({
   console.log(`successfully generated: ${output}`)
 }
 
+type ExtractFileTypesResult = {
+  importPath: string
+  types: {
+    typeName: string
+    type: to.TypeObject
+  }[]
+}
+
 const generateAndWriteCodes = (
   program: ts.Program,
   files: string[],
@@ -90,7 +98,7 @@ const generateAndWriteCodes = (
 ) => {
   const handler = new CompilerApiHandler(program)
 
-  const types = files.map((filePath) => {
+  const types = files.flatMap((filePath): ExtractFileTypesResult[] => {
     const result = handler.extractTypes(filePath)
     const importPath =
       "./" +
@@ -99,20 +107,25 @@ const generateAndWriteCodes = (
         .replace(".ts", "")
 
     if (isNg(result)) {
-      throw Error(`Fail to extract types from ${filePath}`)
+      console.warn(
+        `Failed to extract types from ${filePath} for reason ${result.ng.reason}`
+      )
+      return []
     }
 
-    return {
-      importPath,
-      types: result.ok.filter(
-        (
-          type
-        ): type is {
-          typeName: string
-          type: to.TypeObject
-        } => typeof type.typeName === "string"
-      ),
-    }
+    return [
+      {
+        importPath,
+        types: result.ok.filter(
+          (
+            type
+          ): type is {
+            typeName: string
+            type: to.TypeObject
+          } => typeof type.typeName === "string"
+        ),
+      },
+    ]
   })
 
   const generatedCode = generateTypePredicates(
