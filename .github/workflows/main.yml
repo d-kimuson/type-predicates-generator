@@ -38,7 +38,6 @@ jobs:
       - name: install dependencies
         run: |
           yarn install
-          yarn patch
 
       - name: check source codes (typecheck & eslint & prettier)
         run: |
