@@ -244,6 +244,27 @@ describe("convertType", () => {
         },
       },
       {
+        propName: "maybeNames",
+        type: {
+          __type: "UnionTO",
+          typeName: "string[] | undefined",
+          unions: [
+            {
+              __type: "SpecialTO",
+              kind: "undefined",
+            },
+            {
+              __type: "ArrayTO",
+              typeName: "string[]",
+              child: {
+                __type: "PrimitiveTO",
+                kind: "string",
+              },
+            },
+          ],
+        },
+      },
+      {
         propName: "time",
         type: {
           __type: "SpecialTO",
@@ -383,6 +404,27 @@ describe("convertType", () => {
             {
               __type: "PrimitiveTO",
               kind: "string",
+            },
+          ],
+        },
+      },
+      {
+        propName: "maybeNames",
+        type: {
+          typeName: "string[] | undefined",
+          __type: "UnionTO",
+          unions: [
+            {
+              __type: "SpecialTO",
+              kind: "undefined",
+            },
+            {
+              __type: "ArrayTO",
+              typeName: "string[]",
+              child: {
+                __type: "PrimitiveTO",
+                kind: "string",
+              },
             },
           ],
         },
