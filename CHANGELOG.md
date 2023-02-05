@@ -6,6 +6,11 @@
 
 - When a file fails to be extracted, a warning message is showed instead of exiting unexpectedly.
 
+### Fixed
+
+- Fix validation failure for optional array types when undefined
+- Functions under the object skip validation
+
 ## 0.3.1 (2021-12-10)
 
 ### Features
