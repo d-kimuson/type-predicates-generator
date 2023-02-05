@@ -50,6 +50,9 @@
     "typescript": "^4.4.4"
   },
   "devDependencies": {
+    "@swc/core": "^1.3.32",
+    "@swc/jest": "^0.2.24",
+    "@tsconfig/node18-strictest": "^1.0.0",
     "@types/dedent": "^0.7.0",
     "@types/glob": "^7.2.0",
     "@types/jest": "^27.0.2",

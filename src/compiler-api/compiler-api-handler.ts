@@ -271,35 +271,6 @@ export class CompilerApiHandler {
     return ok(this.#extractArrayTFromTypeNode(maybeNode))
   }
 
-  #extractTypeArguments(
-    type: ts.Type
-  ): Result<
-    to.TypeObject[],
-    { reason: "node_not_found" | "not_type_ref_node" }
-  > {
-    const maybeDeclare = (() => {
-      const base = (type.aliasSymbol?.declarations ?? [])[0]
-
-      return base !== undefined ? new NodeAdaptor(base) : undefined
-    })()
-
-    const maybeTypeRefNode = maybeDeclare?.type
-
-    if (!maybeTypeRefNode) {
-      return ng({
-        reason: "node_not_found",
-      })
-    }
-
-    if (!ts.isTypeReferenceNode(maybeTypeRefNode)) {
-      return ng({
-        reason: "not_type_ref_node",
-      })
-    }
-
-    return ok(this.#extractTypeArgumentsFromTypeRefNode(maybeTypeRefNode))
-  }
-
   #extractTypeArgumentsFromTypeRefNode(
     node: ts.TypeReferenceNode
   ): to.TypeObject[] {

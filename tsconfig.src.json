@@ -1,0 +1,20 @@
+{
+  "extends": "@tsconfig/node18-strictest",
+  "compilerOptions": {
+    "outDir": "dist",
+    "types": ["node"],
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./src/*"]
+    },
+    "declaration": true,
+    "noEmit": false,
+    "noErrorTruncation": true,
+    "allowJs": false,
+    "checkJs": false
+  },
+  "files": ["example.ts"],
+  "include": ["src"],
+  "exclude": ["**/*.test.ts"]
+}

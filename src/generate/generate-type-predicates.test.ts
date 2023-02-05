@@ -1,4 +1,4 @@
-import { isMaybeUndefined } from "~/generate/generate-type-predicates"
+import { isMaybeUndefined } from "./generate-type-predicates"
 
 describe("isMaybeUndefined", () => {
   it("exact undefined", () => {
