@@ -17,7 +17,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "generate:example": "ts-node -r tsconfig-paths/register example.ts",
+    "generate:example": "ts-node --project ./tsconfig.src.json -r tsconfig-paths/register example.ts",
     "cli:example": "yarn build && cd example && node ../dist/src/cli.js",
     "typecheck": "tsc -p . --noEmit",
     "lint": "run-s lint:*",

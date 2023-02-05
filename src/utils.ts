@@ -44,7 +44,7 @@ type SwitchResult<T, R> = {
     resolve: SwitchResolve<Resolved, CaseR>
   ) => SwitchResult<T, R | CaseR>
   default: <Default>(resolve: SwitchResolve<T, Default>) => R | Default
-  resolved?: R
+  resolved: R | undefined
 }
 
 const toResult = <T, R, ExtractT = T>(
