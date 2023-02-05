@@ -18,30 +18,21 @@
   "license": "MIT",
   "scripts": {
     "generate:example": "ts-node -r tsconfig-paths/register example.ts",
-    "cli:example": "cd example && node ../dist/src/cli.js",
-    "precli:example": "yarn build",
+    "cli:example": "yarn build && cd example && node ../dist/src/cli.js",
     "typecheck": "tsc -p . --noEmit",
     "lint": "run-s lint:*",
     "lint:eslint": "eslint . --ext ts",
-    "lint:prettier": "yarn prettier --check",
+    "lint:prettier": "yarn run:prettier --check",
     "fix": "run-s fix:*",
     "fix:eslint": "yarn lint:eslint --fix",
-    "fix:prettier": "yarn prettier --write",
-    "prettier": "prettier '**/*.{ts,js,json,md}'",
+    "fix:prettier": "yarn run:prettier --write",
+    "run:prettier": "prettier '**/*.{ts,mts,mcs,mjs,cjs,js,json,md,yml,yaml}'",
     "build": "tsc -p . && tsc-alias -p tsconfig.json",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint-staged": "lint-staged --allow-empty",
     "prepare": "husky install",
     "prepublishOnly": "yarn build"
-  },
-  "lint-staged": {
-    "**/*.ts": [
-      "eslint --fix"
-    ],
-    "**/*.{ts,js,json,md}": [
-      "prettier --write"
-    ]
   },
   "dependencies": {
     "commander": "^8.3.0",
