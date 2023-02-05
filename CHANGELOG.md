@@ -5,6 +5,7 @@
 ### Changed
 
 - When a file fails to be extracted, a warning message is showed instead of exiting unexpectedly.
+- Change typescript dependencies to peerDependencies. Type resolution should be done in the version of the project in use.
 
 ### Fixed
 
