@@ -197,8 +197,8 @@ export function assertIsTrue(value: unknown): asserts value is True {
  * @param arg_0 Argument to inspect.
  * @return `true` if the argument is of type {@link Obj}, `false` otherwise.
  */
-export const isObj = (arg_0: unknown): arg_0 is Obj => isObject(arg_0) && hasNotUnlistedProperties(['name', 'names', 'maybeName', 'time'])(arg_0) &&
-  ('name' in arg_0 && (isString)(arg_0['name'])) && ('names' in arg_0 && ((arg_1: unknown): boolean => isArray(isString)(arg_1))(arg_0['names'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, isString])(arg_1))(arg_0['maybeName'])) && ('time' in arg_0 && (isDate)(arg_0['time']));
+export const isObj = (arg_0: unknown): arg_0 is Obj => isObject(arg_0) && hasNotUnlistedProperties(['name', 'names', 'maybeName', 'maybeNames', 'time'])(arg_0) &&
+  ('name' in arg_0 && (isString)(arg_0['name'])) && ('names' in arg_0 && ((arg_1: unknown): boolean => isArray(isString)(arg_1))(arg_0['names'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, isString])(arg_1))(arg_0['maybeName'])) && (((arg_1: unknown): boolean => isUnion([isUndefined, (arg_2: unknown): boolean => isArray(isString)(arg_2)])(arg_1))(arg_0['maybeNames'])) && ('time' in arg_0 && (isDate)(arg_0['time']));
 /**
  * Assert if a variable is of type {@link Obj} and throws a TypeError if the assertion fails.
  * This function is automatically generated using [type-predicates-generator](https://www.npmjs.com/package/type-predicates-generator).
