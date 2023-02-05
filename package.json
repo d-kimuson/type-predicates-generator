@@ -33,8 +33,7 @@
     "test:watch": "jest --watch",
     "lint-staged": "lint-staged --allow-empty",
     "prepare": "husky install",
-    "prepublishOnly": "yarn build",
-    "patch": "patch-package"
+    "prepublishOnly": "yarn build"
   },
   "lint-staged": {
     "**/*.ts": [
