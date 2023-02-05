@@ -364,7 +364,8 @@ ${
   )
 
   return (
-    `` +
+    "// @ts-nocheck\n" +
+    "/* eslint-disable */\n" +
     `${files
       .filter(
         ({ types, importPath }) =>

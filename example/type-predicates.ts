@@ -1,3 +1,5 @@
+// @ts-nocheck
+/* eslint-disable */
 import type { ArrStr, ArrStr2, ArrInProp } from './types/array';
 import type { Complex } from './types/complex';
 import type { User } from './types/entity';
