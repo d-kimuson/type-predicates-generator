@@ -21,41 +21,40 @@ jobs:
         node-version: [14.x]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: cache node_modules
-      id: node_modules_project_cache_id
-      uses: actions/cache@v2
-      with:
-        path: |
-          node_modules
-        key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+      - name: cache node_modules
+        id: node_modules_project_cache_id
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
 
-    - name: install dependencies
-      run: |
-        yarn install
-        yarn patch
+      - name: install dependencies
+        run: |
+          yarn install
 
-    - name: check source codes (typecheck & eslint & prettier)
-      run: |
-        yarn typecheck
-        yarn lint
+      - name: check source codes (typecheck & eslint & prettier)
+        run: |
+          yarn typecheck
+          yarn lint
 
-    - name: test
-      run: yarn test
+      - name: test
+        run: yarn test
 
-    - name: check successfully build
-      run: |
-        yarn build
+      - name: check successfully build
+        run: |
+          yarn build
 
-    - name: check generated codes
-      run: |
-        cd example
-        yarn install
-        yarn codegen:tpg
-        yarn typecheck
-        yarn test
+      - name: check generated codes
+        run: |
+          cd example
+          yarn install
+          yarn codegen:tpg
+          yarn typecheck
+          yarn test

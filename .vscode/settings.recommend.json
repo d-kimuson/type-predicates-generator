@@ -2,7 +2,7 @@
   // ESLint
   "eslint.workingDirectories": ["./"],
   "eslint.options": {
-    "overrideConfigFile": ".eslintrc.js",
+    "overrideConfigFile": ".eslintrc.cjs",
     "extensions": ["ts"]
   },
   "eslint.validate": ["typescript"],

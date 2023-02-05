@@ -2,9 +2,21 @@
 
 ## Unreleased
 
+## 0.4.0 (2023-02-06)
+
+### Added
+
+- Put a comment at the beginning of the generated file to disable type checking and linter.
+
 ### Changed
 
 - When a file fails to be extracted, a warning message is showed instead of exiting unexpectedly.
+- Change typescript dependencies to peerDependencies. Type resolution should be done in the version of the project in use.
+
+### Fixed
+
+- Fix validation failure for optional array types when undefined
+- Functions under the object skip validation
 
 ## 0.3.1 (2021-12-10)
 

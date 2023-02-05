@@ -5,6 +5,7 @@ import type { Result } from "~/utils"
 import { isNg } from "~/utils"
 import { ok, ng, switchExpression, isOk } from "~/utils"
 import { primitive, special, skip } from "../type-object"
+import { NodeAdaptor, TypeAdaptor } from "./adaptor"
 
 export class CompilerApiHandler {
   #program: ts.Program
@@ -61,10 +62,11 @@ export class CompilerApiHandler {
 
     return ok(
       nodes
+        .map((node) => new NodeAdaptor(node))
         .flatMap((node) => {
           // export {} from 'path'
-          if (ts.isExportDeclaration(node)) {
-            const nodes = this.#extractTypesFromExportDeclaration(node)
+          if (ts.isExportDeclaration(node.base)) {
+            const nodes = this.#extractTypesFromExportDeclaration(node.base)
             if (isOk(nodes)) {
               return nodes.ok
             } else {
@@ -81,7 +83,9 @@ export class CompilerApiHandler {
               typeof node?.symbol?.escapedName !== "undefined"
                 ? String(node?.symbol?.escapedName)
                 : undefined,
-            type: this.#convertType(this.#typeChecker.getTypeAtLocation(node)),
+            type: this.#convertType(
+              this.#typeChecker.getTypeAtLocation(node.base)
+            ),
           }
         })
         .filter(
@@ -154,6 +158,7 @@ export class CompilerApiHandler {
     if (ts.isNamedExports(clause)) {
       return ok(
         clause.elements
+          .map((node) => new NodeAdaptor(node))
           .map(({ symbol }) => symbol?.getEscapedName())
           .filter((str): str is ts.__String => typeof str !== "undefined")
           .map((str) => ts.unescapeLeadingUnderscores(str))
@@ -225,14 +230,15 @@ export class CompilerApiHandler {
   }
 
   #extractArrayT(
-    type: ts.Type
+    rawType: ts.Type
   ): Result<
     to.TypeObject,
     { reason: "node_not_defined" | "not_array_type_node" | "cannot_resolve" }
   > {
+    const type = new TypeAdaptor(rawType)
     const maybeArrayT = (type.resolvedTypeArguments ?? [])[0]
     if (
-      type.symbol.getEscapedName() === "Array" &&
+      type.base.symbol.getEscapedName() === "Array" &&
       typeof maybeArrayT !== "undefined"
     ) {
       return ok(this.#convertType(maybeArrayT))
@@ -263,29 +269,6 @@ export class CompilerApiHandler {
     }
 
     return ok(this.#extractArrayTFromTypeNode(maybeNode))
-  }
-
-  #extractTypeArguments(
-    type: ts.Type
-  ): Result<
-    to.TypeObject[],
-    { reason: "node_not_found" | "not_type_ref_node" }
-  > {
-    const maybeTypeRefNode = (type.aliasSymbol?.declarations ?? [])[0]?.type
-
-    if (!maybeTypeRefNode) {
-      return ng({
-        reason: "node_not_found",
-      })
-    }
-
-    if (!ts.isTypeReferenceNode(maybeTypeRefNode)) {
-      return ng({
-        reason: "not_type_ref_node",
-      })
-    }
-
-    return ok(this.#extractTypeArgumentsFromTypeRefNode(maybeTypeRefNode))
   }
 
   #extractTypeArgumentsFromTypeRefNode(
@@ -321,14 +304,16 @@ export class CompilerApiHandler {
     )
   }
 
-  #convertType(type: ts.Type): to.TypeObject {
+  #convertType(rawType: ts.Type): to.TypeObject {
+    const type = new TypeAdaptor(rawType)
+
     return switchExpression({
       type,
       typeNode: type.node,
-      typeText: this.#typeToString(type),
+      typeText: this.#typeToString(type.base),
     })
       .case<to.UnionTO>(
-        ({ type }) => type.isUnion(),
+        ({ type }) => type.base.isUnion(),
         ({ typeText }) => ({
           __type: "UnionTO",
           typeName: typeText,
@@ -336,7 +321,7 @@ export class CompilerApiHandler {
         })
       )
       .case<to.TypeParameterTO>(
-        ({ type }) => type.isTypeParameter(),
+        ({ type }) => type.base.isTypeParameter(),
         ({ typeText }) => ({
           __type: "TypeParameterTO",
           name: typeText,
@@ -354,7 +339,7 @@ export class CompilerApiHandler {
         })
       )
       .case<to.LiteralTO>(
-        ({ type }) => type.isLiteral(),
+        ({ type }) => type.base.isLiteral(),
         ({ type }) => ({
           __type: "LiteralTO",
           value: type.value,
@@ -413,12 +398,12 @@ export class CompilerApiHandler {
       )
       .case<to.ArrayTO>(
         ({ type, typeText }) =>
-          typeText.endsWith("[]") || type.symbol?.escapedName === "Array",
+          typeText.endsWith("[]") || type.base.symbol?.escapedName === "Array",
         ({ type, typeText }) => ({
           __type: "ArrayTO",
           typeName: typeText,
           child: (() => {
-            const resultT = this.#extractArrayT(type)
+            const resultT = this.#extractArrayT(type.base)
             return isOk(resultT)
               ? resultT.ok
               : ({ __type: "UnknownTO", kind: "arrayT" } as const)
@@ -426,8 +411,9 @@ export class CompilerApiHandler {
         })
       )
       .case<to.ObjectTO>(
-        ({ type }) => this.#typeChecker.getPropertiesOfType(type).length !== 0,
-        ({ type }) => this.#createObjectType(type)
+        ({ type }) =>
+          this.#typeChecker.getPropertiesOfType(type.base).length !== 0,
+        ({ type }) => this.#createObjectType(type.base)
       )
       .default<to.UnknownTO>(({ typeText }) => ({
         __type: "UnknownTO",

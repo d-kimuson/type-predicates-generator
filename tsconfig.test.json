@@ -1,9 +1,10 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "./tsconfig.src.json",
   "compilerOptions": {
     "types": ["jest", "node"],
     "isolatedModules": false,
     "noEmit": true
   },
-  "include": [".", "../src"]
+  "include": ["src", "test"],
+  "exclude": []
 }
