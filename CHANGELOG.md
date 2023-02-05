@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.4.0 (2023-02-06)
+
 ### Added
 
 - Put a comment at the beginning of the generated file to disable type checking and linter.
