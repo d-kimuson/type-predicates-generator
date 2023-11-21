@@ -2,6 +2,8 @@
 
 `type-predicates-generator` is a tool to automatically generate [type predicates](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) functions from type definitions.
 
+Requires TypeScript v4.4.4 or higher.
+
 ## Getting started
 
 It is available directly from `npx`.
