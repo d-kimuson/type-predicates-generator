@@ -7,10 +7,11 @@
     "kimuson",
     "lefthook",
     "nocheck",
+    "openapitools",
     "preinstall",
+    "publint",
     "tsup",
-    "typecheck",
-    "openapitools"
+    "typecheck"
   ],
   "ignorePaths": ["pnpm-lock.yaml", ".vscode/settings.json", ".eslintrc.cjs"]
 }
