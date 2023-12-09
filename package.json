@@ -16,6 +16,13 @@
     "url": "https://github.com/d-kimuson/type-predicates-generator/issues"
   },
   "license": "MIT",
+  "packageManager": "pnpm@8.10.5",
+  "engines": {
+    "npm": "forbidden, use pnpm",
+    "yarn": "forbidden, use pnpm",
+    "pnpm": ">=8.10.5",
+    "node": ">=20"
+  },
   "scripts": {
     "generate:example": "ts-node --project ./tsconfig.src.json -r tsconfig-paths/register example.ts",
     "cli:example": "yarn build && cd example && node ../dist/src/cli.js",
@@ -32,7 +39,8 @@
     "test:watch": "jest --watch",
     "lint-staged": "lint-staged --allow-empty",
     "prepare": "husky install",
-    "prepublishOnly": "yarn build"
+    "prepublishOnly": "yarn build",
+    "preinstall": "npx -y only-allow pnpm"
   },
   "peerDependencies": {
     "typescript": ">=4.4.4"
