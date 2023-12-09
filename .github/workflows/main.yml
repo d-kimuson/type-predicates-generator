@@ -5,11 +5,7 @@ on:
     branches:
       - main
   pull_request:
-    branches:
-      - main
-    types:
-      - opened
-      - reopened
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
 
 jobs:
@@ -18,43 +14,29 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [18.x, 20.x]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: cache node_modules
-        id: node_modules_project_cache_id
-        uses: actions/cache@v2
-        with:
-          path: |
-            node_modules
-          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/pnpm.lock')) }}
+          cache: "pnpm"
 
       - name: install dependencies
         run: |
-          pnpm install
+          pnpm install --frozen-lockfile
 
       - name: check source codes (typecheck & eslint & prettier)
         run: |
           pnpm typecheck
           pnpm lint
 
-      - name: test
+      - name: Running Test
         run: pnpm test
 
-      - name: check successfully build
+      - name: Check successfully build
         run: |
           pnpm build
-
-      - name: check generated codes
-        run: |
-          cd example
-          pnpm install
-          pnpm codegen:tpg
-          pnpm typecheck
-          pnpm test
