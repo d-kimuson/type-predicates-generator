@@ -1,5 +1,5 @@
 import { uniq } from "ramda"
-import type { ArrayCheckOption } from "."
+import type { ArrayCheckOption } from "./index"
 import type * as to from "../type-object"
 
 const primitiveTypePredicateNameMap = {

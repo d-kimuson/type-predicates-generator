@@ -1,15 +1,33 @@
 {
-  "extends": "@tsconfig/strictest",
   "compilerOptions": {
+    // for node18 (minimum support)
+    // ref: https://github.com/tsconfig/bases/blob/main/bases/node18.json
+    "lib": ["es2022"],
+    "module": "node16",
+    "target": "es2022",
+    // strictest
+    "strict": true,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    // custom
+    "moduleResolution": "node16",
     "outDir": "dist",
     "types": ["node"],
-    "rootDir": ".",
-    "baseUrl": ".",
-    "paths": {
-      "~/*": ["./src/*"]
-    },
     "declaration": true,
     "noEmit": false,
+    "emitDeclarationOnly": true,
     "noErrorTruncation": true,
     "allowJs": false,
     "checkJs": false

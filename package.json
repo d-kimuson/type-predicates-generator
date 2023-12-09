@@ -3,11 +3,25 @@
   "description": "Predicate and assert functions generator from type definitions.",
   "version": "0.3.3",
   "author": "d-kimuson",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
+  "files": [
+    "dist",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
   "bin": {
-    "type-predicates-generator": "dist/src/cli.js"
+    "type-predicates-generator": "dist/cli.js"
   },
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/d-kimuson/type-predicates-generator.git"
@@ -39,7 +53,7 @@
     "fix:eslint": "pnpm lint:eslint --fix",
     "fix:prettier": "pnpm run:prettier --write",
     "run:prettier": "prettier '**/*.{ts,mts,mcs,mjs,cjs,js,json,md,yml,yaml}'",
-    "build": "tsc -p . && tsc-alias -p tsconfig.src.json",
+    "build": "tsup",
     "test": "vitest --run",
     "test:watch": "vitest",
     "prepublishOnly": "pnpm build",
@@ -75,8 +89,8 @@
     "tsc-alias": "^1.8.8",
     "tsconfig-paths": "^3.14.2",
     "tsd": "^0.18.0",
+    "tsup": "^8.0.1",
     "typescript": "^4.9.5",
-    "vite-tsconfig-paths": "^4.2.2",
     "vitest": "^1.0.2"
   },
   "keywords": [

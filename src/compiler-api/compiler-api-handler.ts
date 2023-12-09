@@ -1,10 +1,10 @@
 import * as ts from "typescript"
 import { forEachChild, unescapeLeadingUnderscores } from "typescript"
 import type * as to from "../type-object"
-import type { Result } from "~/utils"
-import { isNg } from "~/utils"
-import { ok, ng, switchExpression, isOk } from "~/utils"
+import type { Result } from "../utils"
 import { primitive, special, skip } from "../type-object"
+import { isNg } from "../utils"
+import { ok, ng, switchExpression, isOk } from "../utils"
 import { NodeAdaptor, TypeAdaptor } from "./adaptor"
 
 export class CompilerApiHandler {

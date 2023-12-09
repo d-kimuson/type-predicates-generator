@@ -1,1 +1,1 @@
-export { run } from "./generate"
+export { run } from "./generate/index"

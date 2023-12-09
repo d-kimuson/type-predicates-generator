@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { resolve } from "path"
 import { Command } from "commander"
-import type { ArrayCheckOption } from "./generate"
-import { run } from "./generate"
+import type { ArrayCheckOption } from "./generate/index"
+import { run } from "./generate/index"
 
 const program = new Command()
 program

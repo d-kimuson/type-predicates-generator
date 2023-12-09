@@ -1,8 +1,8 @@
 import { resolve } from "path"
 import { describe, it, expect } from "vitest"
-import { CompilerApiHandler } from "~/compiler-api/compiler-api-handler"
-import { createProgram } from "~/compiler-api/program"
-import { isOk } from "~/utils"
+import { CompilerApiHandler } from "../compiler-api/compiler-api-handler"
+import { createProgram } from "../compiler-api/program"
+import { isOk } from "../utils"
 
 const absolutePath = (path: string) => resolve(__dirname, "../../example", path)
 

@@ -2,18 +2,14 @@
   "version": "0.2",
   "language": "en",
   "words": [
+    "codegen",
+    "commitizen",
     "kimuson",
+    "lefthook",
     "nocheck",
     "preinstall",
-    "typecheck",
-    "commitizen",
-    "lefthook",
-    "commitizen",
-    "kimuson",
-    "preinstall",
-    "commitizen",
-    "typecheck",
-    "codegen"
+    "tsup",
+    "typecheck"
   ],
   "ignorePaths": ["pnpm-lock.yaml", ".vscode/settings.json", ".eslintrc.cjs"]
 }
