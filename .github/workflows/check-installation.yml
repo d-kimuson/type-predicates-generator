@@ -1,0 +1,43 @@
+name: check-installation-and-generate
+
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: example
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+        package-manager: [pnpm]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: example
+
+      - uses: pnpm/action-setup@v2
+        if: matrix.package-manager == 'pnpm'
+        with:
+          version: 8.10.5
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: ${{ matrix.package-manager }}
+
+      - name: install dependencies
+        run: |
+          ${{ matrix.package-manager }} install
+          pnpm add -D type-predicates-generator@latest
+
+      - name: try generate
+        run: |
+          ${{ matrix.package-manager }} run codegen:openapi
+          ${{ matrix.package-manager }} run codegen:tpg

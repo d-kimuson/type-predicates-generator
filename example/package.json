@@ -11,9 +11,6 @@
     "test": "jest",
     "test:watch": "jest --watch"
   },
-  "dependencies": {
-    "type-predicates-generator": "../"
-  },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.4.16",
     "@types/jest": "^27.0.2",

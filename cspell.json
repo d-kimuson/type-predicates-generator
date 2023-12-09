@@ -9,7 +9,8 @@
     "nocheck",
     "preinstall",
     "tsup",
-    "typecheck"
+    "typecheck",
+    "openapitools"
   ],
   "ignorePaths": ["pnpm-lock.yaml", ".vscode/settings.json", ".eslintrc.cjs"]
 }
