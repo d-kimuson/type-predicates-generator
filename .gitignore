@@ -120,3 +120,4 @@ dist
 # example/type-predicates.ts
 .history
 .cspellcache
+.envrc

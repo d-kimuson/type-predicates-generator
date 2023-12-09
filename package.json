@@ -56,7 +56,7 @@
     "build": "tsup",
     "test": "vitest --run",
     "test:watch": "vitest",
-    "prepublishOnly": "pnpm build",
+    "prepublishOnly": "./scripts/prepublish.sh",
     "preinstall": "npx -y only-allow pnpm"
   },
   "peerDependencies": {
