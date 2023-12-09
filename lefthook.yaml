@@ -21,9 +21,3 @@ prepare-commit-msg:
     "commitizen.sh":
       interactive: true
       runner: sh
-
-pre-push:
-  parallel: true
-  commands:
-    packages-audit:
-      run: pnpm audit
