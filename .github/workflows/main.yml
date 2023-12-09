@@ -33,28 +33,28 @@ jobs:
         with:
           path: |
             node_modules
-          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/pnpm.lock')) }}
 
       - name: install dependencies
         run: |
-          yarn install
+          pnpm install
 
       - name: check source codes (typecheck & eslint & prettier)
         run: |
-          yarn typecheck
-          yarn lint
+          pnpm typecheck
+          pnpm lint
 
       - name: test
-        run: yarn test
+        run: pnpm test
 
       - name: check successfully build
         run: |
-          yarn build
+          pnpm build
 
       - name: check generated codes
         run: |
           cd example
-          yarn install
-          yarn codegen:tpg
-          yarn typecheck
-          yarn test
+          pnpm install
+          pnpm codegen:tpg
+          pnpm typecheck
+          pnpm test
