@@ -22,9 +22,9 @@ devDependencies:
   '@swc/jest':
     specifier: ^0.2.24
     version: 0.2.24(@swc/core@1.3.32)
-  '@tsconfig/node18-strictest':
-    specifier: ^1.0.0
-    version: 1.0.0
+  '@tsconfig/strictest':
+    specifier: ^2.0.2
+    version: 2.0.2
   '@types/dedent':
     specifier: ^0.7.0
     version: 0.7.0
@@ -1263,9 +1263,8 @@ packages:
     resolution: {integrity: sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==}
     dev: true
 
-  /@tsconfig/node18-strictest@1.0.0:
-    resolution: {integrity: sha512-bOuNKwO4Fzbt+Su5wqI9zNHwx5C25gLnutwVQA1sBZk0cW8UjVPVcwzIUhJIIJDUx7zDEbAwdCD2HfvIsV8dYg==}
-    deprecated: TypeScript 5.0 supports combining TSConfigs using array syntax in extends
+  /@tsconfig/strictest@2.0.2:
+    resolution: {integrity: sha512-jt4jIsWKvUvuY6adJnQJlb/UR7DdjC8CjHI/OaSQruj2yX9/K6+KOvDt/vD6udqos/FUk5Op66CvYT7TBLYO5Q==}
     dev: true
 
   /@tsd/typescript@4.4.4:
