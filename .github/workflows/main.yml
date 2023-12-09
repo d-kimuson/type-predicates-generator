@@ -44,3 +44,7 @@ jobs:
       - name: Check successfully build
         run: |
           pnpm build
+
+      - name: try pack package
+        run: |
+          pnpm pack
