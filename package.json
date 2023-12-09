@@ -57,6 +57,7 @@
     "build": "tsup",
     "test": "vitest --run",
     "test:watch": "vitest",
+    "release": "np",
     "prepublishOnly": "pnpm build",
     "preinstall": "npx -y only-allow pnpm"
   },
@@ -83,6 +84,7 @@
     "eslint-import-resolver-typescript": "^2.5.0",
     "eslint-plugin-import": "^2.29.0",
     "lefthook": "^1.5.5",
+    "np": "^9.2.0",
     "prettier": "^2.8.8",
     "publint": "^0.2.6",
     "ts-node": "^10.9.2",
