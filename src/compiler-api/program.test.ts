@@ -1,4 +1,5 @@
 import { resolve } from "path"
+import { describe, it, expect } from "vitest"
 import { createProgram, watchCompiler } from "~/compiler-api/program"
 
 describe("compilerApi", () => {

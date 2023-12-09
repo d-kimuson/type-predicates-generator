@@ -1,4 +1,5 @@
-jest.config.ts
 *.js
 *.cjs
 *.mjs
+
+vitest.config.ts

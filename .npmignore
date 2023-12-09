@@ -9,4 +9,3 @@ tsconfig.json
 /.husky
 /.eslintrc.js
 /example.ts
-/jest.config.js
