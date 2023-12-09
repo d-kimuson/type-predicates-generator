@@ -2,6 +2,8 @@ name: check-installation-and-generate
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 0 1 * *"
 
 defaults:
   run:
@@ -14,7 +16,7 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x]
-        package-manager: [pnpm]
+        package-manager: [npm, yarn, pnpm]
 
     steps:
       - uses: actions/checkout@v4
