@@ -45,6 +45,6 @@ jobs:
         run: |
           pnpm build
 
-      - name: try pack package
+      - name: publint
         run: |
-          pnpm pack
+          pnpm publint

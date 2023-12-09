@@ -49,7 +49,6 @@
     "lint": "pnpm /^lint:.*/",
     "lint:eslint": "eslint . --ext ts",
     "lint:prettier": "pnpm run:prettier --check",
-    "lint:publint": "publint",
     "fix": "pnpm /^fix:.*/",
     "fix:eslint": "pnpm lint:eslint --fix",
     "fix:prettier": "pnpm run:prettier --write",
