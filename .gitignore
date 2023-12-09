@@ -118,6 +118,5 @@ dist
 .pnp.*
 
 # example/type-predicates.ts
-.vscode/settings.json
-
 .history
+.cspellcache

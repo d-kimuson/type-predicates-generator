@@ -1,0 +1,29 @@
+pre-commit:
+  parallel: true
+  commands:
+    prettier:
+      glob: "*.{ts,mts,mcs,mjs,cjs,js,json,md,yml,yaml}"
+      run: |
+        pnpm prettier --write --ignore-unknown --cache {staged_files}
+        git add {staged_files}
+    cspell:
+      glob: "*.{ts,mts,mcs,mjs,cjs,js,json,md,yml,yaml}"
+      run: pnpm cspell lint --gitignore --cache {staged_files}
+    eslint:
+      glob: "*.{ts,mts,mcs}"
+      run: |
+        eslint --cache --fix {staged_files}
+        git add {staged_files}
+
+prepare-commit-msg:
+  parallel: true
+  scripts:
+    "commitizen.sh":
+      interactive: true
+      runner: sh
+
+pre-push:
+  parallel: true
+  commands:
+    packages-audit:
+      run: pnpm audit
