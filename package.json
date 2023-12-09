@@ -1,7 +1,7 @@
 {
   "name": "type-predicates-generator",
   "description": "Predicate and assert functions generator from type definitions.",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "author": "d-kimuson",
   "files": [
     "dist",
@@ -57,7 +57,7 @@
     "build": "tsup",
     "test": "vitest --run",
     "test:watch": "vitest",
-    "release": "np",
+    "release": "semantic-release",
     "prepublishOnly": "pnpm build",
     "preinstall": "npx -y only-allow pnpm"
   },
@@ -84,9 +84,9 @@
     "eslint-import-resolver-typescript": "^2.5.0",
     "eslint-plugin-import": "^2.29.0",
     "lefthook": "^1.5.5",
-    "np": "^9.2.0",
     "prettier": "^2.8.8",
     "publint": "^0.2.6",
+    "semantic-release": "^22.0.10",
     "ts-node": "^10.9.2",
     "tsd": "^0.18.0",
     "tsup": "^8.0.1",
