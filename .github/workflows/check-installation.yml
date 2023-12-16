@@ -16,7 +16,6 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x]
-        package-manager: [npm, yarn, pnpm]
 
     steps:
       - uses: actions/checkout@v4
@@ -24,7 +23,6 @@ jobs:
           sparse-checkout: example
 
       - uses: pnpm/action-setup@v2
-        if: matrix.package-manager == 'pnpm'
         with:
           version: 8.10.5
 
@@ -32,14 +30,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: ${{ matrix.package-manager }}
+          cache: "pnpm"
 
       - name: install dependencies
         run: |
-          ${{ matrix.package-manager }} install
+          pnpm install
           pnpm add -D type-predicates-generator@latest
 
       - name: try generate
         run: |
-          ${{ matrix.package-manager }} run codegen:openapi
-          ${{ matrix.package-manager }} run codegen:tpg
+          pnpm run codegen:openapi
+          pnpm run codegen:tpg
